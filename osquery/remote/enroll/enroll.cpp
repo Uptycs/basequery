@@ -19,6 +19,7 @@
 #include <osquery/sql/sql.h>
 #include <osquery/utils/conversions/split.h>
 #include <osquery/utils/mutex.h>
+#include <osquery/utils/conversions/split.h>
 #include <osquery/utils/system/time.h>
 
 namespace osquery {
@@ -67,10 +68,6 @@ CLI_FLAG(bool,
  * provides a helper member for transforming PluginRequests to strings.
  */
 CREATE_LAZY_REGISTRY(EnrollPlugin, "enroll");
-
-// This mutex guards the node key so that multiple threads cannot initiate
-// re-enrollment at the same time.
-Mutex node_key_mutex;
 
 // This mutex guards the node key so that multiple threads cannot initiate
 // re-enrollment at the same time.

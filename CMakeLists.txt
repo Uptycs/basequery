@@ -167,10 +167,6 @@ function(importLibraries)
 endfunction()
 
 function(generateInstallDirectives)
-  get_property(augeas_lenses_path
-    GLOBAL PROPERTY "AUGEAS_LENSES_FOLDER_PATH"
-  )
-
   if(PLATFORM_LINUX)
     install(
       FILES "tools/deployment/linux_packaging/deb/conffiles"
@@ -247,18 +243,6 @@ function(generateInstallDirectives)
     install(
       FILES "tools/deployment/osquery.example.conf"
       DESTINATION "share/osquery"
-    )
-
-    install(
-      DIRECTORY "${augeas_lenses_path}/"
-      DESTINATION "share/osquery/lenses"
-      FILES_MATCHING PATTERN "*.aug"
-      PATTERN "tests" EXCLUDE
-    )
-
-    install(
-      FILES "${augeas_lenses_path}/../COPYING"
-      DESTINATION "share/osquery/lenses"
     )
 
     install(
@@ -439,13 +423,6 @@ function(generateInstallDirectives)
     install(
       FILES "tools/deployment/osqueryctl"
       DESTINATION "bin"
-    )
-
-    install(
-      DIRECTORY "${augeas_lenses_path}"
-      DESTINATION "/private/var/osquery"
-      FILES_MATCHING PATTERN "*.aug"
-      PATTERN "tests" EXCLUDE
     )
 
     install(

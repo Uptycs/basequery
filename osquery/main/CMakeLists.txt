@@ -70,13 +70,11 @@ function(generateOsqueryMain)
     thirdparty_boost
   )
 
-  if(OSQUERY_BUILD_AWS)
-    target_link_libraries(osquery_main PUBLIC
-      plugins_logger_awsfirehose
-      plugins_logger_awskinesis
-      plugins_logger_awslogforwarder
-    )
-  endif()
+  target_link_libraries(osquery_main PUBLIC
+    plugins_logger_awsfirehose
+    plugins_logger_awskinesis
+    plugins_logger_awslogforwarder
+  )
 
   if(DEFINED PLATFORM_WINDOWS)
     target_link_libraries(osquery_main PUBLIC

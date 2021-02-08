@@ -26,28 +26,15 @@ function(generateOsqueryFilesystem)
     filesystem.h
   )
 
-  if(DEFINED PLATFORM_MACOS)
-    list(APPEND source_files
-      darwin/bsd_file_flags.cpp
-    )
-  endif()
-
   if(DEFINED PLATFORM_POSIX)
     list(APPEND source_files
       posix/fileops.cpp
-      posix/xattrs.cpp
-    )
-
-    list(APPEND public_header_files
-      posix/xattrs.h
     )
   endif()
 
   if(DEFINED PLATFORM_LINUX)
     list(APPEND source_files
-      linux/mem.cpp
       linux/proc.cpp
-      linux/mounts.cpp
     )
 
   elseif(DEFINED PLATFORM_WINDOWS)
@@ -76,7 +63,6 @@ function(generateOsqueryFilesystem)
   if(DEFINED PLATFORM_LINUX)
     list(APPEND public_header_files
       linux/proc.h
-      linux/mounts.h
     )
   endif()
 
@@ -114,19 +100,6 @@ function(generateOsqueryFilesystemTest)
     tests/fileops.cpp
     tests/filesystem.cpp
   )
-
-  if(DEFINED PLATFORM_POSIX)
-    list(APPEND source_files
-      tests/posix/xattrs.cpp
-    )
-  endif()
-
-  if(DEFINED PLATFORM_MACOS)
-    list(APPEND source_files
-      tests/darwin/plist_tests.cpp
-      tests/darwin/bsd_file_flags_tests.cpp
-    )
-  endif()
 
   add_osquery_executable(osquery_filesystem_filesystemtests-test ${source_files})
 

@@ -247,13 +247,6 @@ Status createDirectory(const boost::filesystem::path& path,
                        bool ignore_existence = false);
 
 /**
- * @brief Return a vector of all home directories on the system.
- *
- * @return a vector of string paths containing all home directories.
- */
-std::set<boost::filesystem::path> getHomeDirectories();
-
-/**
  * @brief Check the permissions of a file and its directory.
  *
  * 'Safe' implies the directory is not a /tmp-like directory in that users

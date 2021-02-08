@@ -1768,12 +1768,12 @@ static void main_init(struct callback_data* data) {
   if (term.is_initialized() &&
       (*term).find("xterm-256color") != std::string::npos) {
     sqlite3_snprintf(
-        sizeof(mainPrompt), mainPrompt, "\033[38;5;147mosquery> \033[0m");
+        sizeof(mainPrompt), mainPrompt, "\033[38;5;147mquery> \033[0m");
     sqlite3_snprintf(sizeof(continuePrompt),
                      continuePrompt,
                      "\033[38;5;147m    ...> \033[0m");
   } else {
-    sqlite3_snprintf(sizeof(mainPrompt), mainPrompt, "osquery> ");
+    sqlite3_snprintf(sizeof(mainPrompt), mainPrompt, "query> ");
     sqlite3_snprintf(sizeof(continuePrompt), continuePrompt, "    ...> ");
   }
   sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);

@@ -13,11 +13,12 @@
 #include <thrift/TDispatchProcessor.h>
 #include <thrift/async/TConcurrentClientSyncInfo.h>
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 #ifdef _MSC_VER
-  #pragma warning( push )
-  #pragma warning (disable : 4250 ) //inheriting methods via dominance 
+#pragma warning(push)
+#pragma warning(disable : 4250) // inheriting methods via dominance
 #endif
 
 class ExtensionManagerIf : virtual public ExtensionIf {
@@ -25,10 +26,18 @@ class ExtensionManagerIf : virtual public ExtensionIf {
   virtual ~ExtensionManagerIf() {}
   virtual void extensions(InternalExtensionList& _return) = 0;
   virtual void options(InternalOptionList& _return) = 0;
-  virtual void registerExtension(ExtensionStatus& _return, const InternalExtensionInfo& info, const ExtensionRegistry& registry) = 0;
-  virtual void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid) = 0;
+  virtual void registerExtension(ExtensionStatus& _return,
+                                 const InternalExtensionInfo& info,
+                                 const ExtensionRegistry& registry) = 0;
+  virtual void deregisterExtension(ExtensionStatus& _return,
+                                   const ExtensionRouteUUID uuid) = 0;
   virtual void query(ExtensionResponse& _return, const std::string& sql) = 0;
-  virtual void getQueryColumns(ExtensionResponse& _return, const std::string& sql) = 0;
+  virtual void getQueryColumns(ExtensionResponse& _return,
+                               const std::string& sql) = 0;
+  virtual void streamEvents(ExtensionStatus& _return,
+                            const std::string& name,
+                            const ExtensionPluginResponse& events) = 0;
+  virtual void getNodeKey(std::string& _return) = 0;
 };
 
 class ExtensionManagerIfFactory : virtual public ExtensionIfFactory {
@@ -37,18 +46,21 @@ class ExtensionManagerIfFactory : virtual public ExtensionIfFactory {
 
   virtual ~ExtensionManagerIfFactory() {}
 
-  virtual ExtensionManagerIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) = 0;
+  virtual ExtensionManagerIf* getHandler(
+      const ::apache::thrift::TConnectionInfo& connInfo) = 0;
   virtual void releaseHandler(ExtensionIf* /* handler */) = 0;
 };
 
-class ExtensionManagerIfSingletonFactory : virtual public ExtensionManagerIfFactory {
+class ExtensionManagerIfSingletonFactory
+    : virtual public ExtensionManagerIfFactory {
  public:
   ExtensionManagerIfSingletonFactory(
       const ::std::shared_ptr<ExtensionManagerIf>& iface)
       : iface_(iface) {}
   virtual ~ExtensionManagerIfSingletonFactory() {}
 
-  virtual ExtensionManagerIf* getHandler(const ::apache::thrift::TConnectionInfo&) {
+  virtual ExtensionManagerIf* getHandler(
+      const ::apache::thrift::TConnectionInfo&) {
     return iface_.get();
   }
   virtual void releaseHandler(ExtensionIf* /* handler */) {}
@@ -57,7 +69,8 @@ class ExtensionManagerIfSingletonFactory : virtual public ExtensionManagerIfFact
   ::std::shared_ptr<ExtensionManagerIf> iface_;
 };
 
-class ExtensionManagerNull : virtual public ExtensionManagerIf , virtual public ExtensionNull {
+class ExtensionManagerNull : virtual public ExtensionManagerIf,
+                             virtual public ExtensionNull {
  public:
   virtual ~ExtensionManagerNull() {}
   void extensions(InternalExtensionList& /* _return */) {
@@ -66,73 +79,78 @@ class ExtensionManagerNull : virtual public ExtensionManagerIf , virtual public 
   void options(InternalOptionList& /* _return */) {
     return;
   }
-  void registerExtension(ExtensionStatus& /* _return */, const InternalExtensionInfo& /* info */, const ExtensionRegistry& /* registry */) {
+  void registerExtension(ExtensionStatus& /* _return */,
+                         const InternalExtensionInfo& /* info */,
+                         const ExtensionRegistry& /* registry */) {
     return;
   }
-  void deregisterExtension(ExtensionStatus& /* _return */, const ExtensionRouteUUID /* uuid */) {
+  void deregisterExtension(ExtensionStatus& /* _return */,
+                           const ExtensionRouteUUID /* uuid */) {
     return;
   }
   void query(ExtensionResponse& /* _return */, const std::string& /* sql */) {
     return;
   }
-  void getQueryColumns(ExtensionResponse& /* _return */, const std::string& /* sql */) {
+  void getQueryColumns(ExtensionResponse& /* _return */,
+                       const std::string& /* sql */) {
+    return;
+  }
+  void streamEvents(ExtensionStatus& /* _return */,
+                    const std::string& /* name */,
+                    const ExtensionPluginResponse& /* events */) {
+    return;
+  }
+  void getNodeKey(std::string& /* _return */) {
     return;
   }
 };
 
-
 class ExtensionManager_extensions_args {
  public:
-
   ExtensionManager_extensions_args(const ExtensionManager_extensions_args&);
   ExtensionManager_extensions_args(ExtensionManager_extensions_args&&);
-  ExtensionManager_extensions_args& operator=(const ExtensionManager_extensions_args&);
+  ExtensionManager_extensions_args& operator=(
+      const ExtensionManager_extensions_args&);
   ExtensionManager_extensions_args& operator=(
       ExtensionManager_extensions_args&&);
-  ExtensionManager_extensions_args() {
-  }
+  ExtensionManager_extensions_args() {}
 
   virtual ~ExtensionManager_extensions_args() noexcept;
 
-  bool operator == (const ExtensionManager_extensions_args & /* rhs */) const
-  {
+  bool operator==(const ExtensionManager_extensions_args& /* rhs */) const {
     return true;
   }
-  bool operator != (const ExtensionManager_extensions_args &rhs) const {
+  bool operator!=(const ExtensionManager_extensions_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_extensions_args & ) const;
+  bool operator<(const ExtensionManager_extensions_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_extensions_pargs {
  public:
   virtual ~ExtensionManager_extensions_pargs() noexcept;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_extensions_result__isset {
   _ExtensionManager_extensions_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_extensions_result__isset;
 
 class ExtensionManager_extensions_result {
  public:
-
   ExtensionManager_extensions_result(const ExtensionManager_extensions_result&);
   ExtensionManager_extensions_result(ExtensionManager_extensions_result&&);
-  ExtensionManager_extensions_result& operator=(const ExtensionManager_extensions_result&);
+  ExtensionManager_extensions_result& operator=(
+      const ExtensionManager_extensions_result&);
   ExtensionManager_extensions_result& operator=(
       ExtensionManager_extensions_result&&);
-  ExtensionManager_extensions_result() {
-  }
+  ExtensionManager_extensions_result() {}
 
   virtual ~ExtensionManager_extensions_result() noexcept;
   InternalExtensionList success;
@@ -141,26 +159,24 @@ class ExtensionManager_extensions_result {
 
   void __set_success(const InternalExtensionList& val);
 
-  bool operator == (const ExtensionManager_extensions_result & rhs) const
-  {
+  bool operator==(const ExtensionManager_extensions_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_extensions_result &rhs) const {
+  bool operator!=(const ExtensionManager_extensions_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_extensions_result & ) const;
+  bool operator<(const ExtensionManager_extensions_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_extensions_presult__isset {
   _ExtensionManager_extensions_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_extensions_presult__isset;
 
 class ExtensionManager_extensions_presult {
@@ -171,60 +187,52 @@ class ExtensionManager_extensions_presult {
   _ExtensionManager_extensions_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
-
 
 class ExtensionManager_options_args {
  public:
-
   ExtensionManager_options_args(const ExtensionManager_options_args&);
   ExtensionManager_options_args(ExtensionManager_options_args&&);
-  ExtensionManager_options_args& operator=(const ExtensionManager_options_args&);
+  ExtensionManager_options_args& operator=(
+      const ExtensionManager_options_args&);
   ExtensionManager_options_args& operator=(ExtensionManager_options_args&&);
-  ExtensionManager_options_args() {
-  }
+  ExtensionManager_options_args() {}
 
   virtual ~ExtensionManager_options_args() noexcept;
 
-  bool operator == (const ExtensionManager_options_args & /* rhs */) const
-  {
+  bool operator==(const ExtensionManager_options_args& /* rhs */) const {
     return true;
   }
-  bool operator != (const ExtensionManager_options_args &rhs) const {
+  bool operator!=(const ExtensionManager_options_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_options_args & ) const;
+  bool operator<(const ExtensionManager_options_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_options_pargs {
  public:
   virtual ~ExtensionManager_options_pargs() noexcept;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_options_result__isset {
   _ExtensionManager_options_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_options_result__isset;
 
 class ExtensionManager_options_result {
  public:
-
   ExtensionManager_options_result(const ExtensionManager_options_result&);
   ExtensionManager_options_result(ExtensionManager_options_result&&);
-  ExtensionManager_options_result& operator=(const ExtensionManager_options_result&);
+  ExtensionManager_options_result& operator=(
+      const ExtensionManager_options_result&);
   ExtensionManager_options_result& operator=(ExtensionManager_options_result&&);
-  ExtensionManager_options_result() {
-  }
+  ExtensionManager_options_result() {}
 
   virtual ~ExtensionManager_options_result() noexcept;
   InternalOptionList success;
@@ -233,26 +241,24 @@ class ExtensionManager_options_result {
 
   void __set_success(const InternalOptionList& val);
 
-  bool operator == (const ExtensionManager_options_result & rhs) const
-  {
+  bool operator==(const ExtensionManager_options_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_options_result &rhs) const {
+  bool operator!=(const ExtensionManager_options_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_options_result & ) const;
+  bool operator<(const ExtensionManager_options_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_options_presult__isset {
   _ExtensionManager_options_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_options_presult__isset;
 
 class ExtensionManager_options_presult {
@@ -263,26 +269,26 @@ class ExtensionManager_options_presult {
   _ExtensionManager_options_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 typedef struct _ExtensionManager_registerExtension_args__isset {
-  _ExtensionManager_registerExtension_args__isset() : info(false), registry(false) {}
-  bool info :1;
-  bool registry :1;
+  _ExtensionManager_registerExtension_args__isset()
+      : info(false), registry(false) {}
+  bool info : 1;
+  bool registry : 1;
 } _ExtensionManager_registerExtension_args__isset;
 
 class ExtensionManager_registerExtension_args {
  public:
-
-  ExtensionManager_registerExtension_args(const ExtensionManager_registerExtension_args&);
+  ExtensionManager_registerExtension_args(
+      const ExtensionManager_registerExtension_args&);
   ExtensionManager_registerExtension_args(
       ExtensionManager_registerExtension_args&&);
-  ExtensionManager_registerExtension_args& operator=(const ExtensionManager_registerExtension_args&);
+  ExtensionManager_registerExtension_args& operator=(
+      const ExtensionManager_registerExtension_args&);
   ExtensionManager_registerExtension_args& operator=(
       ExtensionManager_registerExtension_args&&);
-  ExtensionManager_registerExtension_args() {
-  }
+  ExtensionManager_registerExtension_args() {}
 
   virtual ~ExtensionManager_registerExtension_args() noexcept;
   InternalExtensionInfo info;
@@ -294,25 +300,22 @@ class ExtensionManager_registerExtension_args {
 
   void __set_registry(const ExtensionRegistry& val);
 
-  bool operator == (const ExtensionManager_registerExtension_args & rhs) const
-  {
+  bool operator==(const ExtensionManager_registerExtension_args& rhs) const {
     if (!(info == rhs.info))
       return false;
     if (!(registry == rhs.registry))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_registerExtension_args &rhs) const {
+  bool operator!=(const ExtensionManager_registerExtension_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_registerExtension_args & ) const;
+  bool operator<(const ExtensionManager_registerExtension_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_registerExtension_pargs {
  public:
@@ -321,25 +324,24 @@ class ExtensionManager_registerExtension_pargs {
   const ExtensionRegistry* registry;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_registerExtension_result__isset {
   _ExtensionManager_registerExtension_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_registerExtension_result__isset;
 
 class ExtensionManager_registerExtension_result {
  public:
-
-  ExtensionManager_registerExtension_result(const ExtensionManager_registerExtension_result&);
+  ExtensionManager_registerExtension_result(
+      const ExtensionManager_registerExtension_result&);
   ExtensionManager_registerExtension_result(
       ExtensionManager_registerExtension_result&&);
-  ExtensionManager_registerExtension_result& operator=(const ExtensionManager_registerExtension_result&);
+  ExtensionManager_registerExtension_result& operator=(
+      const ExtensionManager_registerExtension_result&);
   ExtensionManager_registerExtension_result& operator=(
       ExtensionManager_registerExtension_result&&);
-  ExtensionManager_registerExtension_result() {
-  }
+  ExtensionManager_registerExtension_result() {}
 
   virtual ~ExtensionManager_registerExtension_result() noexcept;
   ExtensionStatus success;
@@ -348,26 +350,24 @@ class ExtensionManager_registerExtension_result {
 
   void __set_success(const ExtensionStatus& val);
 
-  bool operator == (const ExtensionManager_registerExtension_result & rhs) const
-  {
+  bool operator==(const ExtensionManager_registerExtension_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_registerExtension_result &rhs) const {
+  bool operator!=(const ExtensionManager_registerExtension_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_registerExtension_result & ) const;
+  bool operator<(const ExtensionManager_registerExtension_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_registerExtension_presult__isset {
   _ExtensionManager_registerExtension_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_registerExtension_presult__isset;
 
 class ExtensionManager_registerExtension_presult {
@@ -378,25 +378,24 @@ class ExtensionManager_registerExtension_presult {
   _ExtensionManager_registerExtension_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 typedef struct _ExtensionManager_deregisterExtension_args__isset {
   _ExtensionManager_deregisterExtension_args__isset() : uuid(false) {}
-  bool uuid :1;
+  bool uuid : 1;
 } _ExtensionManager_deregisterExtension_args__isset;
 
 class ExtensionManager_deregisterExtension_args {
  public:
-
-  ExtensionManager_deregisterExtension_args(const ExtensionManager_deregisterExtension_args&);
+  ExtensionManager_deregisterExtension_args(
+      const ExtensionManager_deregisterExtension_args&);
   ExtensionManager_deregisterExtension_args(
       ExtensionManager_deregisterExtension_args&&);
-  ExtensionManager_deregisterExtension_args& operator=(const ExtensionManager_deregisterExtension_args&);
+  ExtensionManager_deregisterExtension_args& operator=(
+      const ExtensionManager_deregisterExtension_args&);
   ExtensionManager_deregisterExtension_args& operator=(
       ExtensionManager_deregisterExtension_args&&);
-  ExtensionManager_deregisterExtension_args() : uuid(0) {
-  }
+  ExtensionManager_deregisterExtension_args() : uuid(0) {}
 
   virtual ~ExtensionManager_deregisterExtension_args() noexcept;
   ExtensionRouteUUID uuid;
@@ -405,23 +404,20 @@ class ExtensionManager_deregisterExtension_args {
 
   void __set_uuid(const ExtensionRouteUUID val);
 
-  bool operator == (const ExtensionManager_deregisterExtension_args & rhs) const
-  {
+  bool operator==(const ExtensionManager_deregisterExtension_args& rhs) const {
     if (!(uuid == rhs.uuid))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_deregisterExtension_args &rhs) const {
+  bool operator!=(const ExtensionManager_deregisterExtension_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_deregisterExtension_args & ) const;
+  bool operator<(const ExtensionManager_deregisterExtension_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_deregisterExtension_pargs {
  public:
@@ -429,25 +425,24 @@ class ExtensionManager_deregisterExtension_pargs {
   const ExtensionRouteUUID* uuid;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_deregisterExtension_result__isset {
   _ExtensionManager_deregisterExtension_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_deregisterExtension_result__isset;
 
 class ExtensionManager_deregisterExtension_result {
  public:
-
-  ExtensionManager_deregisterExtension_result(const ExtensionManager_deregisterExtension_result&);
+  ExtensionManager_deregisterExtension_result(
+      const ExtensionManager_deregisterExtension_result&);
   ExtensionManager_deregisterExtension_result(
       ExtensionManager_deregisterExtension_result&&);
-  ExtensionManager_deregisterExtension_result& operator=(const ExtensionManager_deregisterExtension_result&);
+  ExtensionManager_deregisterExtension_result& operator=(
+      const ExtensionManager_deregisterExtension_result&);
   ExtensionManager_deregisterExtension_result& operator=(
       ExtensionManager_deregisterExtension_result&&);
-  ExtensionManager_deregisterExtension_result() {
-  }
+  ExtensionManager_deregisterExtension_result() {}
 
   virtual ~ExtensionManager_deregisterExtension_result() noexcept;
   ExtensionStatus success;
@@ -456,26 +451,26 @@ class ExtensionManager_deregisterExtension_result {
 
   void __set_success(const ExtensionStatus& val);
 
-  bool operator == (const ExtensionManager_deregisterExtension_result & rhs) const
-  {
+  bool operator==(
+      const ExtensionManager_deregisterExtension_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_deregisterExtension_result &rhs) const {
+  bool operator!=(
+      const ExtensionManager_deregisterExtension_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_deregisterExtension_result & ) const;
+  bool operator<(const ExtensionManager_deregisterExtension_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_deregisterExtension_presult__isset {
   _ExtensionManager_deregisterExtension_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_deregisterExtension_presult__isset;
 
 class ExtensionManager_deregisterExtension_presult {
@@ -486,23 +481,20 @@ class ExtensionManager_deregisterExtension_presult {
   _ExtensionManager_deregisterExtension_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 typedef struct _ExtensionManager_query_args__isset {
   _ExtensionManager_query_args__isset() : sql(false) {}
-  bool sql :1;
+  bool sql : 1;
 } _ExtensionManager_query_args__isset;
 
 class ExtensionManager_query_args {
  public:
-
   ExtensionManager_query_args(const ExtensionManager_query_args&);
   ExtensionManager_query_args(ExtensionManager_query_args&&);
   ExtensionManager_query_args& operator=(const ExtensionManager_query_args&);
   ExtensionManager_query_args& operator=(ExtensionManager_query_args&&);
-  ExtensionManager_query_args() : sql() {
-  }
+  ExtensionManager_query_args() : sql() {}
 
   virtual ~ExtensionManager_query_args() noexcept;
   std::string sql;
@@ -511,23 +503,20 @@ class ExtensionManager_query_args {
 
   void __set_sql(const std::string& val);
 
-  bool operator == (const ExtensionManager_query_args & rhs) const
-  {
+  bool operator==(const ExtensionManager_query_args& rhs) const {
     if (!(sql == rhs.sql))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_query_args &rhs) const {
+  bool operator!=(const ExtensionManager_query_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_query_args & ) const;
+  bool operator<(const ExtensionManager_query_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_query_pargs {
  public:
@@ -535,23 +524,21 @@ class ExtensionManager_query_pargs {
   const std::string* sql;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_query_result__isset {
   _ExtensionManager_query_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_query_result__isset;
 
 class ExtensionManager_query_result {
  public:
-
   ExtensionManager_query_result(const ExtensionManager_query_result&);
   ExtensionManager_query_result(ExtensionManager_query_result&&);
-  ExtensionManager_query_result& operator=(const ExtensionManager_query_result&);
+  ExtensionManager_query_result& operator=(
+      const ExtensionManager_query_result&);
   ExtensionManager_query_result& operator=(ExtensionManager_query_result&&);
-  ExtensionManager_query_result() {
-  }
+  ExtensionManager_query_result() {}
 
   virtual ~ExtensionManager_query_result() noexcept;
   ExtensionResponse success;
@@ -560,26 +547,24 @@ class ExtensionManager_query_result {
 
   void __set_success(const ExtensionResponse& val);
 
-  bool operator == (const ExtensionManager_query_result & rhs) const
-  {
+  bool operator==(const ExtensionManager_query_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_query_result &rhs) const {
+  bool operator!=(const ExtensionManager_query_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_query_result & ) const;
+  bool operator<(const ExtensionManager_query_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_query_presult__isset {
   _ExtensionManager_query_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_query_presult__isset;
 
 class ExtensionManager_query_presult {
@@ -590,25 +575,24 @@ class ExtensionManager_query_presult {
   _ExtensionManager_query_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 typedef struct _ExtensionManager_getQueryColumns_args__isset {
   _ExtensionManager_getQueryColumns_args__isset() : sql(false) {}
-  bool sql :1;
+  bool sql : 1;
 } _ExtensionManager_getQueryColumns_args__isset;
 
 class ExtensionManager_getQueryColumns_args {
  public:
-
-  ExtensionManager_getQueryColumns_args(const ExtensionManager_getQueryColumns_args&);
+  ExtensionManager_getQueryColumns_args(
+      const ExtensionManager_getQueryColumns_args&);
   ExtensionManager_getQueryColumns_args(
       ExtensionManager_getQueryColumns_args&&);
-  ExtensionManager_getQueryColumns_args& operator=(const ExtensionManager_getQueryColumns_args&);
+  ExtensionManager_getQueryColumns_args& operator=(
+      const ExtensionManager_getQueryColumns_args&);
   ExtensionManager_getQueryColumns_args& operator=(
       ExtensionManager_getQueryColumns_args&&);
-  ExtensionManager_getQueryColumns_args() : sql() {
-  }
+  ExtensionManager_getQueryColumns_args() : sql() {}
 
   virtual ~ExtensionManager_getQueryColumns_args() noexcept;
   std::string sql;
@@ -617,23 +601,20 @@ class ExtensionManager_getQueryColumns_args {
 
   void __set_sql(const std::string& val);
 
-  bool operator == (const ExtensionManager_getQueryColumns_args & rhs) const
-  {
+  bool operator==(const ExtensionManager_getQueryColumns_args& rhs) const {
     if (!(sql == rhs.sql))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_getQueryColumns_args &rhs) const {
+  bool operator!=(const ExtensionManager_getQueryColumns_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_getQueryColumns_args & ) const;
+  bool operator<(const ExtensionManager_getQueryColumns_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class ExtensionManager_getQueryColumns_pargs {
  public:
@@ -641,25 +622,24 @@ class ExtensionManager_getQueryColumns_pargs {
   const std::string* sql;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_getQueryColumns_result__isset {
   _ExtensionManager_getQueryColumns_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_getQueryColumns_result__isset;
 
 class ExtensionManager_getQueryColumns_result {
  public:
-
-  ExtensionManager_getQueryColumns_result(const ExtensionManager_getQueryColumns_result&);
+  ExtensionManager_getQueryColumns_result(
+      const ExtensionManager_getQueryColumns_result&);
   ExtensionManager_getQueryColumns_result(
       ExtensionManager_getQueryColumns_result&&);
-  ExtensionManager_getQueryColumns_result& operator=(const ExtensionManager_getQueryColumns_result&);
+  ExtensionManager_getQueryColumns_result& operator=(
+      const ExtensionManager_getQueryColumns_result&);
   ExtensionManager_getQueryColumns_result& operator=(
       ExtensionManager_getQueryColumns_result&&);
-  ExtensionManager_getQueryColumns_result() {
-  }
+  ExtensionManager_getQueryColumns_result() {}
 
   virtual ~ExtensionManager_getQueryColumns_result() noexcept;
   ExtensionResponse success;
@@ -668,26 +648,24 @@ class ExtensionManager_getQueryColumns_result {
 
   void __set_success(const ExtensionResponse& val);
 
-  bool operator == (const ExtensionManager_getQueryColumns_result & rhs) const
-  {
+  bool operator==(const ExtensionManager_getQueryColumns_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const ExtensionManager_getQueryColumns_result &rhs) const {
+  bool operator!=(const ExtensionManager_getQueryColumns_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionManager_getQueryColumns_result & ) const;
+  bool operator<(const ExtensionManager_getQueryColumns_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _ExtensionManager_getQueryColumns_presult__isset {
   _ExtensionManager_getQueryColumns_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _ExtensionManager_getQueryColumns_presult__isset;
 
 class ExtensionManager_getQueryColumns_presult {
@@ -698,10 +676,199 @@ class ExtensionManager_getQueryColumns_presult {
   _ExtensionManager_getQueryColumns_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
-class ExtensionManagerClient : virtual public ExtensionManagerIf, public ExtensionClient {
+typedef struct _ExtensionManager_streamEvents_args__isset {
+  _ExtensionManager_streamEvents_args__isset() : name(false), events(false) {}
+  bool name : 1;
+  bool events : 1;
+} _ExtensionManager_streamEvents_args__isset;
+
+class ExtensionManager_streamEvents_args {
+ public:
+  ExtensionManager_streamEvents_args(const ExtensionManager_streamEvents_args&);
+  ExtensionManager_streamEvents_args(ExtensionManager_streamEvents_args&&);
+  ExtensionManager_streamEvents_args& operator=(
+      const ExtensionManager_streamEvents_args&);
+  ExtensionManager_streamEvents_args& operator=(
+      ExtensionManager_streamEvents_args&&);
+  ExtensionManager_streamEvents_args() : name() {}
+
+  virtual ~ExtensionManager_streamEvents_args() noexcept;
+  std::string name;
+  ExtensionPluginResponse events;
+
+  _ExtensionManager_streamEvents_args__isset __isset;
+
+  void __set_name(const std::string& val);
+
+  void __set_events(const ExtensionPluginResponse& val);
+
+  bool operator==(const ExtensionManager_streamEvents_args& rhs) const {
+    if (!(name == rhs.name))
+      return false;
+    if (!(events == rhs.events))
+      return false;
+    return true;
+  }
+  bool operator!=(const ExtensionManager_streamEvents_args& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_streamEvents_args&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+class ExtensionManager_streamEvents_pargs {
+ public:
+  virtual ~ExtensionManager_streamEvents_pargs() noexcept;
+  const std::string* name;
+  const ExtensionPluginResponse* events;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_streamEvents_result__isset {
+  _ExtensionManager_streamEvents_result__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_streamEvents_result__isset;
+
+class ExtensionManager_streamEvents_result {
+ public:
+  ExtensionManager_streamEvents_result(
+      const ExtensionManager_streamEvents_result&);
+  ExtensionManager_streamEvents_result(ExtensionManager_streamEvents_result&&);
+  ExtensionManager_streamEvents_result& operator=(
+      const ExtensionManager_streamEvents_result&);
+  ExtensionManager_streamEvents_result& operator=(
+      ExtensionManager_streamEvents_result&&);
+  ExtensionManager_streamEvents_result() {}
+
+  virtual ~ExtensionManager_streamEvents_result() noexcept;
+  ExtensionStatus success;
+
+  _ExtensionManager_streamEvents_result__isset __isset;
+
+  void __set_success(const ExtensionStatus& val);
+
+  bool operator==(const ExtensionManager_streamEvents_result& rhs) const {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator!=(const ExtensionManager_streamEvents_result& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_streamEvents_result&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_streamEvents_presult__isset {
+  _ExtensionManager_streamEvents_presult__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_streamEvents_presult__isset;
+
+class ExtensionManager_streamEvents_presult {
+ public:
+  virtual ~ExtensionManager_streamEvents_presult() noexcept;
+  ExtensionStatus* success;
+
+  _ExtensionManager_streamEvents_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+};
+
+class ExtensionManager_getNodeKey_args {
+ public:
+  ExtensionManager_getNodeKey_args(const ExtensionManager_getNodeKey_args&);
+  ExtensionManager_getNodeKey_args(ExtensionManager_getNodeKey_args&&);
+  ExtensionManager_getNodeKey_args& operator=(
+      const ExtensionManager_getNodeKey_args&);
+  ExtensionManager_getNodeKey_args& operator=(
+      ExtensionManager_getNodeKey_args&&);
+  ExtensionManager_getNodeKey_args() {}
+
+  virtual ~ExtensionManager_getNodeKey_args() noexcept;
+
+  bool operator==(const ExtensionManager_getNodeKey_args& /* rhs */) const {
+    return true;
+  }
+  bool operator!=(const ExtensionManager_getNodeKey_args& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_getNodeKey_args&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+class ExtensionManager_getNodeKey_pargs {
+ public:
+  virtual ~ExtensionManager_getNodeKey_pargs() noexcept;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_getNodeKey_result__isset {
+  _ExtensionManager_getNodeKey_result__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_getNodeKey_result__isset;
+
+class ExtensionManager_getNodeKey_result {
+ public:
+  ExtensionManager_getNodeKey_result(const ExtensionManager_getNodeKey_result&);
+  ExtensionManager_getNodeKey_result(ExtensionManager_getNodeKey_result&&);
+  ExtensionManager_getNodeKey_result& operator=(
+      const ExtensionManager_getNodeKey_result&);
+  ExtensionManager_getNodeKey_result& operator=(
+      ExtensionManager_getNodeKey_result&&);
+  ExtensionManager_getNodeKey_result() : success() {}
+
+  virtual ~ExtensionManager_getNodeKey_result() noexcept;
+  std::string success;
+
+  _ExtensionManager_getNodeKey_result__isset __isset;
+
+  void __set_success(const std::string& val);
+
+  bool operator==(const ExtensionManager_getNodeKey_result& rhs) const {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator!=(const ExtensionManager_getNodeKey_result& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_getNodeKey_result&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_getNodeKey_presult__isset {
+  _ExtensionManager_getNodeKey_presult__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_getNodeKey_presult__isset;
+
+class ExtensionManager_getNodeKey_presult {
+ public:
+  virtual ~ExtensionManager_getNodeKey_presult() noexcept;
+  std::string* success;
+
+  _ExtensionManager_getNodeKey_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+};
+
+class ExtensionManagerClient : virtual public ExtensionManagerIf,
+                               public ExtensionClient {
  public:
   ExtensionManagerClient(
       std::shared_ptr<::apache::thrift::protocol::TProtocol> prot)
@@ -722,10 +889,14 @@ class ExtensionManagerClient : virtual public ExtensionManagerIf, public Extensi
   void options(InternalOptionList& _return);
   void send_options();
   void recv_options(InternalOptionList& _return);
-  void registerExtension(ExtensionStatus& _return, const InternalExtensionInfo& info, const ExtensionRegistry& registry);
-  void send_registerExtension(const InternalExtensionInfo& info, const ExtensionRegistry& registry);
+  void registerExtension(ExtensionStatus& _return,
+                         const InternalExtensionInfo& info,
+                         const ExtensionRegistry& registry);
+  void send_registerExtension(const InternalExtensionInfo& info,
+                              const ExtensionRegistry& registry);
   void recv_registerExtension(ExtensionStatus& _return);
-  void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid);
+  void deregisterExtension(ExtensionStatus& _return,
+                           const ExtensionRouteUUID uuid);
   void send_deregisterExtension(const ExtensionRouteUUID uuid);
   void recv_deregisterExtension(ExtensionStatus& _return);
   void query(ExtensionResponse& _return, const std::string& sql);
@@ -734,37 +905,89 @@ class ExtensionManagerClient : virtual public ExtensionManagerIf, public Extensi
   void getQueryColumns(ExtensionResponse& _return, const std::string& sql);
   void send_getQueryColumns(const std::string& sql);
   void recv_getQueryColumns(ExtensionResponse& _return);
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& events);
+  void send_streamEvents(const std::string& name,
+                         const ExtensionPluginResponse& events);
+  void recv_streamEvents(ExtensionStatus& _return);
+  void getNodeKey(std::string& _return);
+  void send_getNodeKey();
+  void recv_getNodeKey(std::string& _return);
 };
 
 class ExtensionManagerProcessor : public ExtensionProcessor {
  protected:
   ::std::shared_ptr<ExtensionManagerIf> iface_;
-  virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext);
+  virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot,
+                            ::apache::thrift::protocol::TProtocol* oprot,
+                            const std::string& fname,
+                            int32_t seqid,
+                            void* callContext);
+
  private:
-  typedef  void (ExtensionManagerProcessor::*ProcessFunction)(int32_t, ::apache::thrift::protocol::TProtocol*, ::apache::thrift::protocol::TProtocol*, void*);
+  typedef void (ExtensionManagerProcessor::*ProcessFunction)(
+      int32_t,
+      ::apache::thrift::protocol::TProtocol*,
+      ::apache::thrift::protocol::TProtocol*,
+      void*);
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
-  void process_extensions(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_options(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_registerExtension(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_deregisterExtension(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_query(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_getQueryColumns(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_extensions(int32_t seqid,
+                          ::apache::thrift::protocol::TProtocol* iprot,
+                          ::apache::thrift::protocol::TProtocol* oprot,
+                          void* callContext);
+  void process_options(int32_t seqid,
+                       ::apache::thrift::protocol::TProtocol* iprot,
+                       ::apache::thrift::protocol::TProtocol* oprot,
+                       void* callContext);
+  void process_registerExtension(int32_t seqid,
+                                 ::apache::thrift::protocol::TProtocol* iprot,
+                                 ::apache::thrift::protocol::TProtocol* oprot,
+                                 void* callContext);
+  void process_deregisterExtension(int32_t seqid,
+                                   ::apache::thrift::protocol::TProtocol* iprot,
+                                   ::apache::thrift::protocol::TProtocol* oprot,
+                                   void* callContext);
+  void process_query(int32_t seqid,
+                     ::apache::thrift::protocol::TProtocol* iprot,
+                     ::apache::thrift::protocol::TProtocol* oprot,
+                     void* callContext);
+  void process_getQueryColumns(int32_t seqid,
+                               ::apache::thrift::protocol::TProtocol* iprot,
+                               ::apache::thrift::protocol::TProtocol* oprot,
+                               void* callContext);
+  void process_streamEvents(int32_t seqid,
+                            ::apache::thrift::protocol::TProtocol* iprot,
+                            ::apache::thrift::protocol::TProtocol* oprot,
+                            void* callContext);
+  void process_getNodeKey(int32_t seqid,
+                          ::apache::thrift::protocol::TProtocol* iprot,
+                          ::apache::thrift::protocol::TProtocol* oprot,
+                          void* callContext);
+
  public:
   ExtensionManagerProcessor(::std::shared_ptr<ExtensionManagerIf> iface)
       : ExtensionProcessor(iface), iface_(iface) {
     processMap_["extensions"] = &ExtensionManagerProcessor::process_extensions;
     processMap_["options"] = &ExtensionManagerProcessor::process_options;
-    processMap_["registerExtension"] = &ExtensionManagerProcessor::process_registerExtension;
-    processMap_["deregisterExtension"] = &ExtensionManagerProcessor::process_deregisterExtension;
+    processMap_["registerExtension"] =
+        &ExtensionManagerProcessor::process_registerExtension;
+    processMap_["deregisterExtension"] =
+        &ExtensionManagerProcessor::process_deregisterExtension;
     processMap_["query"] = &ExtensionManagerProcessor::process_query;
-    processMap_["getQueryColumns"] = &ExtensionManagerProcessor::process_getQueryColumns;
+    processMap_["getQueryColumns"] =
+        &ExtensionManagerProcessor::process_getQueryColumns;
+    processMap_["streamEvents"] =
+        &ExtensionManagerProcessor::process_streamEvents;
+    processMap_["getNodeKey"] = &ExtensionManagerProcessor::process_getNodeKey;
   }
 
   virtual ~ExtensionManagerProcessor() {}
 };
 
-class ExtensionManagerProcessorFactory : public ::apache::thrift::TProcessorFactory {
+class ExtensionManagerProcessorFactory
+    : public ::apache::thrift::TProcessorFactory {
  public:
   ExtensionManagerProcessorFactory(
       const ::std::shared_ptr<ExtensionManagerIfFactory>& handlerFactory)
@@ -777,7 +1000,8 @@ class ExtensionManagerProcessorFactory : public ::apache::thrift::TProcessorFact
   ::std::shared_ptr<ExtensionManagerIfFactory> handlerFactory_;
 };
 
-class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public ExtensionMultiface {
+class ExtensionManagerMultiface : virtual public ExtensionManagerIf,
+                                  public ExtensionMultiface {
  public:
   ExtensionManagerMultiface(
       std::vector<std::shared_ptr<ExtensionManagerIf>>& ifaces)
@@ -788,6 +1012,7 @@ class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public Exte
     }
   }
   virtual ~ExtensionManagerMultiface() {}
+
  protected:
   std::vector<std::shared_ptr<ExtensionManagerIf>> ifaces_;
   ExtensionManagerMultiface() {}
@@ -817,7 +1042,9 @@ class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public Exte
     return;
   }
 
-  void registerExtension(ExtensionStatus& _return, const InternalExtensionInfo& info, const ExtensionRegistry& registry) {
+  void registerExtension(ExtensionStatus& _return,
+                         const InternalExtensionInfo& info,
+                         const ExtensionRegistry& registry) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
@@ -827,7 +1054,8 @@ class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public Exte
     return;
   }
 
-  void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid) {
+  void deregisterExtension(ExtensionStatus& _return,
+                           const ExtensionRouteUUID uuid) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
@@ -857,12 +1085,34 @@ class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public Exte
     return;
   }
 
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& events) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->streamEvents(_return, name, events);
+    }
+    ifaces_[i]->streamEvents(_return, name, events);
+    return;
+  }
+
+  void getNodeKey(std::string& _return) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->getNodeKey(_return);
+    }
+    ifaces_[i]->getNodeKey(_return);
+    return;
+  }
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
 // out of order responses.  It is slower than the regular client, so should
 // only be used when you need to share a connection among multiple threads
-class ExtensionManagerConcurrentClient : virtual public ExtensionManagerIf, public ExtensionConcurrentClient {
+class ExtensionManagerConcurrentClient : virtual public ExtensionManagerIf,
+                                         public ExtensionConcurrentClient {
  public:
   ExtensionManagerConcurrentClient(
       std::shared_ptr<::apache::thrift::protocol::TProtocol> prot,
@@ -885,10 +1135,14 @@ class ExtensionManagerConcurrentClient : virtual public ExtensionManagerIf, publ
   void options(InternalOptionList& _return);
   int32_t send_options();
   void recv_options(InternalOptionList& _return, const int32_t seqid);
-  void registerExtension(ExtensionStatus& _return, const InternalExtensionInfo& info, const ExtensionRegistry& registry);
-  int32_t send_registerExtension(const InternalExtensionInfo& info, const ExtensionRegistry& registry);
+  void registerExtension(ExtensionStatus& _return,
+                         const InternalExtensionInfo& info,
+                         const ExtensionRegistry& registry);
+  int32_t send_registerExtension(const InternalExtensionInfo& info,
+                                 const ExtensionRegistry& registry);
   void recv_registerExtension(ExtensionStatus& _return, const int32_t seqid);
-  void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid);
+  void deregisterExtension(ExtensionStatus& _return,
+                           const ExtensionRouteUUID uuid);
   int32_t send_deregisterExtension(const ExtensionRouteUUID uuid);
   void recv_deregisterExtension(ExtensionStatus& _return, const int32_t seqid);
   void query(ExtensionResponse& _return, const std::string& sql);
@@ -897,12 +1151,22 @@ class ExtensionManagerConcurrentClient : virtual public ExtensionManagerIf, publ
   void getQueryColumns(ExtensionResponse& _return, const std::string& sql);
   int32_t send_getQueryColumns(const std::string& sql);
   void recv_getQueryColumns(ExtensionResponse& _return, const int32_t seqid);
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& events);
+  int32_t send_streamEvents(const std::string& name,
+                            const ExtensionPluginResponse& events);
+  void recv_streamEvents(ExtensionStatus& _return, const int32_t seqid);
+  void getNodeKey(std::string& _return);
+  int32_t send_getNodeKey();
+  void recv_getNodeKey(std::string& _return, const int32_t seqid);
 };
 
 #ifdef _MSC_VER
-  #pragma warning( pop )
+#pragma warning(pop)
 #endif
 
-}} // namespace
+} // namespace extensions
+} // namespace osquery
 
 #endif

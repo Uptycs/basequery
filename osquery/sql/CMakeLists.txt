@@ -22,7 +22,6 @@ function(generateOsquerySql)
     sqlite_filesystem.cpp
     sqlite_hashing.cpp
     sqlite_math.cpp
-    sqlite_operations.cpp
     sqlite_util.cpp
     virtual_sqlite_table.cpp
     virtual_table.cpp
@@ -42,9 +41,9 @@ function(generateOsquerySql)
 
   target_link_libraries(osquery_sql PUBLIC
     osquery_cxx_settings
-    osquery_carver_utils
     osquery_core
     osquery_core_plugins
+    osquery_events_eventsregistry
     osquery_hashing
     osquery_process
     osquery_utils

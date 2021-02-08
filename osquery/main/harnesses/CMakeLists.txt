@@ -29,7 +29,6 @@ function(osqueryMainHarnesses)
     osquery_database
     osquery_devtools
     osquery_dispatcher
-    osquery_experimental_eventsstream_registry
     osquery_extensions
     osquery_extensions_implthrift
     osquery_logger_datalogger

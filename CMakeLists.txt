@@ -89,64 +89,28 @@ endfunction()
 
 function(importLibraries)
   set(library_descriptor_list
-    "Linux,Darwin:augeas"
     "Linux,Darwin,Windows:boost"
     "Linux,Darwin,Windows:bzip2"
     "Linux,Darwin,Windows:gflags"
     "Linux,Darwin,Windows:glog"
     "Linux,Darwin,Windows:googletest"
     "Linux,Darwin,Windows:libarchive"
-    "Linux:libaudit"
-    "Linux:libcryptsetup"
-    "Linux:libdevmapper"
-    "Linux:libelfin"
-    "Linux:libgcrypt"
-    "Linux:libgpg-error"
-    "Linux:libiptables"
-    "Linux,Darwin:libmagic"
     "Linux,Darwin,Windows:librdkafka"
-    "Linux:librpm"
-    "Linux:libudev"
     "Linux,Darwin,Windows:libxml2"
     "Linux,Darwin,Windows:linenoise-ng"
-    "Linux,Darwin:lldpd"
     "Linux,Darwin,Windows:lzma"
-    "Linux,Darwin:popt"
     "Linux,Darwin,Windows:rapidjson"
     "Linux,Darwin,Windows:rocksdb"
-    "Linux,Darwin,Windows:sleuthkit"
-    "Linux,Darwin:smartmontools"
     "Linux,Darwin,Windows:sqlite"
     "Linux,Darwin:ssdeep-cpp"
     "Linux,Darwin,Windows:thrift"
     "Linux:util-linux"
-    "Linux,Darwin,Windows:yara"
     "Linux,Darwin,Windows:zlib"
     "Linux,Darwin,Windows:zstd"
     "Linux,Darwin,Windows:openssl"
+    "Linux,Darwin,Windows:aws-sdk-cpp"
     "Linux,Darwin,Windows:icu"
-    "Linux:expat"
-    "Linux:dbus"
-    "Linux:libcap"
   )
-
-  if(OSQUERY_BUILD_BPF)
-    list(APPEND library_descriptor_list
-      "Linux:ebpfpub"
-    )
-  endif()
-
-  if(OSQUERY_BUILD_AWS)
-    list(APPEND library_descriptor_list
-      "Linux,Darwin,Windows:aws-sdk-cpp"
-    )
-  endif()
-
-  if(OSQUERY_BUILD_DPKG)
-    list(APPEND library_descriptor_list
-      "Linux:libdpkg"
-    )
-  endif()
 
   foreach(library_descriptor ${library_descriptor_list})
     # Expand the library descriptor
@@ -197,23 +161,12 @@ function(importLibraries)
       endif()
 
     else()
-      # In case we were trying to import ebpfpub, check whether the build option
-      # has been turned OFF automatically because the installed LLVM libraries
-      # were broken/not compatible
-      if(NOT OSQUERY_BUILD_BPF AND "${library}" STREQUAL "ebpfpub")
-        message(WARNING "ebpfpub could not correctly import the LLVM libraries. BPF support has been disabled")
-      else()
-        message(FATAL_ERROR "The '${library}' library was found but it couldn't be imported correctly")
-      endif()
+      message(FATAL_ERROR "The '${library}' library was found but it couldn't be imported correctly")
     endif()
   endforeach()
 endfunction()
 
 function(generateInstallDirectives)
-  get_property(augeas_lenses_path
-    GLOBAL PROPERTY "AUGEAS_LENSES_FOLDER_PATH"
-  )
-
   if(PLATFORM_LINUX)
     install(
       FILES "tools/deployment/linux_packaging/deb/conffiles"
@@ -290,18 +243,6 @@ function(generateInstallDirectives)
     install(
       FILES "tools/deployment/osquery.example.conf"
       DESTINATION "share/osquery"
-    )
-
-    install(
-      DIRECTORY "${augeas_lenses_path}/"
-      DESTINATION "share/osquery/lenses"
-      FILES_MATCHING PATTERN "*.aug"
-      PATTERN "tests" EXCLUDE
-    )
-
-    install(
-      FILES "${augeas_lenses_path}/../COPYING"
-      DESTINATION "share/osquery/lenses"
     )
 
     install(
@@ -475,13 +416,6 @@ function(generateInstallDirectives)
     install(
       FILES "tools/deployment/osqueryctl"
       DESTINATION "bin"
-    )
-
-    install(
-      DIRECTORY "${augeas_lenses_path}"
-      DESTINATION "/private/var/osquery"
-      FILES_MATCHING PATTERN "*.aug"
-      PATTERN "tests" EXCLUDE
     )
 
     install(

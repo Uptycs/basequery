@@ -9,23 +9,20 @@
 
 #include <iosfwd>
 
-#include <thrift/Thrift.h>
 #include <thrift/TApplicationException.h>
 #include <thrift/TBase.h>
+#include <thrift/Thrift.h>
 #include <thrift/protocol/TProtocol.h>
 #include <thrift/transport/TTransport.h>
 
 #include <functional>
 #include <memory>
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 struct ExtensionCode {
-  enum type {
-    EXT_SUCCESS = 0,
-    EXT_FAILED = 1,
-    EXT_FATAL = 2
-  };
+  enum type { EXT_SUCCESS = 0, EXT_FAILED = 1, EXT_FATAL = 2 };
 };
 
 extern const std::map<int, const char*> _ExtensionCode_VALUES_TO_NAMES;
@@ -34,19 +31,20 @@ std::ostream& operator<<(std::ostream& out, const ExtensionCode::type& val);
 
 std::string to_string(const ExtensionCode::type& val);
 
-typedef std::map<std::string, std::string>  ExtensionPluginRequest;
+typedef std::map<std::string, std::string> ExtensionPluginRequest;
 
-typedef std::vector<std::map<std::string, std::string> >  ExtensionPluginResponse;
+typedef std::vector<std::map<std::string, std::string>> ExtensionPluginResponse;
 
-typedef std::map<std::string, class InternalOptionInfo>  InternalOptionList;
+typedef std::map<std::string, class InternalOptionInfo> InternalOptionList;
 
 typedef int64_t ExtensionRouteUUID;
 
-typedef std::map<std::string, ExtensionPluginResponse>  ExtensionRouteTable;
+typedef std::map<std::string, ExtensionPluginResponse> ExtensionRouteTable;
 
-typedef std::map<std::string, ExtensionRouteTable>  ExtensionRegistry;
+typedef std::map<std::string, ExtensionRouteTable> ExtensionRegistry;
 
-typedef std::map<ExtensionRouteUUID, class InternalExtensionInfo>  InternalExtensionList;
+typedef std::map<ExtensionRouteUUID, class InternalExtensionInfo>
+    InternalExtensionList;
 
 class InternalOptionInfo;
 
@@ -59,21 +57,20 @@ class ExtensionResponse;
 class ExtensionException;
 
 typedef struct _InternalOptionInfo__isset {
-  _InternalOptionInfo__isset() : value(false), default_value(false), type(false) {}
-  bool value :1;
-  bool default_value :1;
-  bool type :1;
+  _InternalOptionInfo__isset()
+      : value(false), default_value(false), type(false) {}
+  bool value : 1;
+  bool default_value : 1;
+  bool type : 1;
 } _InternalOptionInfo__isset;
 
 class InternalOptionInfo : public virtual ::apache::thrift::TBase {
  public:
-
   InternalOptionInfo(const InternalOptionInfo&);
   InternalOptionInfo(InternalOptionInfo&&);
   InternalOptionInfo& operator=(const InternalOptionInfo&);
   InternalOptionInfo& operator=(InternalOptionInfo&&);
-  InternalOptionInfo() : value(), default_value(), type() {
-  }
+  InternalOptionInfo() : value(), default_value(), type() {}
 
   virtual ~InternalOptionInfo() noexcept;
   std::string value;
@@ -88,8 +85,7 @@ class InternalOptionInfo : public virtual ::apache::thrift::TBase {
 
   void __set_type(const std::string& val);
 
-  bool operator == (const InternalOptionInfo & rhs) const
-  {
+  bool operator==(const InternalOptionInfo& rhs) const {
     if (!(value == rhs.value))
       return false;
     if (!(default_value == rhs.default_value))
@@ -98,11 +94,11 @@ class InternalOptionInfo : public virtual ::apache::thrift::TBase {
       return false;
     return true;
   }
-  bool operator != (const InternalOptionInfo &rhs) const {
+  bool operator!=(const InternalOptionInfo& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const InternalOptionInfo & ) const;
+  bool operator<(const InternalOptionInfo&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -110,27 +106,30 @@ class InternalOptionInfo : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(InternalOptionInfo &a, InternalOptionInfo &b);
+void swap(InternalOptionInfo& a, InternalOptionInfo& b);
 
 std::ostream& operator<<(std::ostream& out, const InternalOptionInfo& obj);
 
 typedef struct _InternalExtensionInfo__isset {
-  _InternalExtensionInfo__isset() : name(false), version(false), sdk_version(false), min_sdk_version(false) {}
-  bool name :1;
-  bool version :1;
-  bool sdk_version :1;
-  bool min_sdk_version :1;
+  _InternalExtensionInfo__isset()
+      : name(false),
+        version(false),
+        sdk_version(false),
+        min_sdk_version(false) {}
+  bool name : 1;
+  bool version : 1;
+  bool sdk_version : 1;
+  bool min_sdk_version : 1;
 } _InternalExtensionInfo__isset;
 
 class InternalExtensionInfo : public virtual ::apache::thrift::TBase {
  public:
-
   InternalExtensionInfo(const InternalExtensionInfo&);
   InternalExtensionInfo(InternalExtensionInfo&&);
   InternalExtensionInfo& operator=(const InternalExtensionInfo&);
   InternalExtensionInfo& operator=(InternalExtensionInfo&&);
-  InternalExtensionInfo() : name(), version(), sdk_version(), min_sdk_version() {
-  }
+  InternalExtensionInfo()
+      : name(), version(), sdk_version(), min_sdk_version() {}
 
   virtual ~InternalExtensionInfo() noexcept;
   std::string name;
@@ -148,8 +147,7 @@ class InternalExtensionInfo : public virtual ::apache::thrift::TBase {
 
   void __set_min_sdk_version(const std::string& val);
 
-  bool operator == (const InternalExtensionInfo & rhs) const
-  {
+  bool operator==(const InternalExtensionInfo& rhs) const {
     if (!(name == rhs.name))
       return false;
     if (!(version == rhs.version))
@@ -160,11 +158,11 @@ class InternalExtensionInfo : public virtual ::apache::thrift::TBase {
       return false;
     return true;
   }
-  bool operator != (const InternalExtensionInfo &rhs) const {
+  bool operator!=(const InternalExtensionInfo& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const InternalExtensionInfo & ) const;
+  bool operator<(const InternalExtensionInfo&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -172,26 +170,24 @@ class InternalExtensionInfo : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(InternalExtensionInfo &a, InternalExtensionInfo &b);
+void swap(InternalExtensionInfo& a, InternalExtensionInfo& b);
 
 std::ostream& operator<<(std::ostream& out, const InternalExtensionInfo& obj);
 
 typedef struct _ExtensionStatus__isset {
   _ExtensionStatus__isset() : code(false), message(false), uuid(false) {}
-  bool code :1;
-  bool message :1;
-  bool uuid :1;
+  bool code : 1;
+  bool message : 1;
+  bool uuid : 1;
 } _ExtensionStatus__isset;
 
 class ExtensionStatus : public virtual ::apache::thrift::TBase {
  public:
-
   ExtensionStatus(const ExtensionStatus&);
   ExtensionStatus(ExtensionStatus&&);
   ExtensionStatus& operator=(const ExtensionStatus&);
   ExtensionStatus& operator=(ExtensionStatus&&);
-  ExtensionStatus() : code(0), message(), uuid(0) {
-  }
+  ExtensionStatus() : code(0), message(), uuid(0) {}
 
   virtual ~ExtensionStatus() noexcept;
   int32_t code;
@@ -206,8 +202,7 @@ class ExtensionStatus : public virtual ::apache::thrift::TBase {
 
   void __set_uuid(const ExtensionRouteUUID val);
 
-  bool operator == (const ExtensionStatus & rhs) const
-  {
+  bool operator==(const ExtensionStatus& rhs) const {
     if (!(code == rhs.code))
       return false;
     if (!(message == rhs.message))
@@ -216,11 +211,11 @@ class ExtensionStatus : public virtual ::apache::thrift::TBase {
       return false;
     return true;
   }
-  bool operator != (const ExtensionStatus &rhs) const {
+  bool operator!=(const ExtensionStatus& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionStatus & ) const;
+  bool operator<(const ExtensionStatus&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -228,25 +223,23 @@ class ExtensionStatus : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(ExtensionStatus &a, ExtensionStatus &b);
+void swap(ExtensionStatus& a, ExtensionStatus& b);
 
 std::ostream& operator<<(std::ostream& out, const ExtensionStatus& obj);
 
 typedef struct _ExtensionResponse__isset {
   _ExtensionResponse__isset() : status(false), response(false) {}
-  bool status :1;
-  bool response :1;
+  bool status : 1;
+  bool response : 1;
 } _ExtensionResponse__isset;
 
 class ExtensionResponse : public virtual ::apache::thrift::TBase {
  public:
-
   ExtensionResponse(const ExtensionResponse&);
   ExtensionResponse(ExtensionResponse&&);
   ExtensionResponse& operator=(const ExtensionResponse&);
   ExtensionResponse& operator=(ExtensionResponse&&);
-  ExtensionResponse() {
-  }
+  ExtensionResponse() {}
 
   virtual ~ExtensionResponse() noexcept;
   ExtensionStatus status;
@@ -258,19 +251,18 @@ class ExtensionResponse : public virtual ::apache::thrift::TBase {
 
   void __set_response(const ExtensionPluginResponse& val);
 
-  bool operator == (const ExtensionResponse & rhs) const
-  {
+  bool operator==(const ExtensionResponse& rhs) const {
     if (!(status == rhs.status))
       return false;
     if (!(response == rhs.response))
       return false;
     return true;
   }
-  bool operator != (const ExtensionResponse &rhs) const {
+  bool operator!=(const ExtensionResponse& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionResponse & ) const;
+  bool operator<(const ExtensionResponse&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -278,26 +270,24 @@ class ExtensionResponse : public virtual ::apache::thrift::TBase {
   virtual void printTo(std::ostream& out) const;
 };
 
-void swap(ExtensionResponse &a, ExtensionResponse &b);
+void swap(ExtensionResponse& a, ExtensionResponse& b);
 
 std::ostream& operator<<(std::ostream& out, const ExtensionResponse& obj);
 
 typedef struct _ExtensionException__isset {
   _ExtensionException__isset() : code(false), message(false), uuid(false) {}
-  bool code :1;
-  bool message :1;
-  bool uuid :1;
+  bool code : 1;
+  bool message : 1;
+  bool uuid : 1;
 } _ExtensionException__isset;
 
 class ExtensionException : public ::apache::thrift::TException {
  public:
-
   ExtensionException(const ExtensionException&);
   ExtensionException(ExtensionException&&);
   ExtensionException& operator=(const ExtensionException&);
   ExtensionException& operator=(ExtensionException&&);
-  ExtensionException() : code(0), message(), uuid(0) {
-  }
+  ExtensionException() : code(0), message(), uuid(0) {}
 
   virtual ~ExtensionException() noexcept;
   int32_t code;
@@ -312,8 +302,7 @@ class ExtensionException : public ::apache::thrift::TException {
 
   void __set_uuid(const ExtensionRouteUUID val);
 
-  bool operator == (const ExtensionException & rhs) const
-  {
+  bool operator==(const ExtensionException& rhs) const {
     if (!(code == rhs.code))
       return false;
     if (!(message == rhs.message))
@@ -322,11 +311,11 @@ class ExtensionException : public ::apache::thrift::TException {
       return false;
     return true;
   }
-  bool operator != (const ExtensionException &rhs) const {
+  bool operator!=(const ExtensionException& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const ExtensionException & ) const;
+  bool operator<(const ExtensionException&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -336,10 +325,11 @@ class ExtensionException : public ::apache::thrift::TException {
   const char* what() const noexcept;
 };
 
-void swap(ExtensionException &a, ExtensionException &b);
+void swap(ExtensionException& a, ExtensionException& b);
 
 std::ostream& operator<<(std::ostream& out, const ExtensionException& obj);
 
-}} // namespace
+} // namespace extensions
+} // namespace osquery
 
 #endif

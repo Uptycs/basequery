@@ -4,15 +4,15 @@
 #include "Extension.h"
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/transport/TServerSocket.h>
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
-using namespace  ::osquery::extensions;
+using namespace ::osquery::extensions;
 
 class ExtensionHandler : virtual public ExtensionIf {
  public:
@@ -25,7 +25,10 @@ class ExtensionHandler : virtual public ExtensionIf {
     printf("ping\n");
   }
 
-  void call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request) {
+  void call(ExtensionResponse& _return,
+            const std::string& registry,
+            const std::string& item,
+            const ExtensionPluginRequest& request) {
     // Your implementation goes here
     printf("call\n");
   }
@@ -34,10 +37,9 @@ class ExtensionHandler : virtual public ExtensionIf {
     // Your implementation goes here
     printf("shutdown\n");
   }
-
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   int port = 9090;
   ::std::shared_ptr<ExtensionHandler> handler(new ExtensionHandler());
   ::std::shared_ptr<TProcessor> processor(new ExtensionProcessor(handler));
@@ -47,8 +49,8 @@ int main(int argc, char **argv) {
   ::std::shared_ptr<TProtocolFactory> protocolFactory(
       new TBinaryProtocolFactory());
 
-  TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+  TSimpleServer server(
+      processor, serverTransport, transportFactory, protocolFactory);
   server.serve();
   return 0;
 }
-

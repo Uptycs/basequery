@@ -16,7 +16,6 @@ function(generateOsqueryDevtoolsTestsPrintertestsTest)
     osquery_cxx_settings
     osquery_database
     osquery_distributed
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_registry

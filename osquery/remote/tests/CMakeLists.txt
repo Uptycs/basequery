@@ -23,7 +23,6 @@ function(generateOsqueryRemoteTestsRemotetestsutils)
     osquery_cxx_settings
     osquery_config_tests_testutils
     osquery_database
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_remote_enroll_tlsenroll
@@ -41,7 +40,6 @@ function(generateOsqueryRemoteTestsRequeststestsTest)
     osquery_cxx_settings
     osquery_config_tests_testutils
     osquery_database
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_remote_enroll_tlsenroll

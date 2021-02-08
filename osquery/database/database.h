@@ -46,9 +46,6 @@ extern const std::string kQueries;
 /// The "domain" where event results are stored, queued for querytime retrieval.
 extern const std::string kEvents;
 
-/// The "domain" where the results of carve queries are stored.
-extern const std::string kCarves;
-
 /// The key for the DB version
 extern const std::string kDbVersionKey;
 

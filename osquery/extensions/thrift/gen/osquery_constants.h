@@ -9,16 +9,17 @@
 
 #include "osquery_types.h"
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 class osqueryConstants {
  public:
   osqueryConstants();
-
 };
 
 extern const osqueryConstants g_osquery_constants;
 
-}} // namespace
+} // namespace extensions
+} // namespace osquery
 
 #endif

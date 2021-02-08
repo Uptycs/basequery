@@ -6,12 +6,12 @@
  */
 #include "osquery_constants.h"
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 const osqueryConstants g_osquery_constants;
 
-osqueryConstants::osqueryConstants() {
-}
+osqueryConstants::osqueryConstants() {}
 
-}} // namespace
-
+} // namespace extensions
+} // namespace osquery

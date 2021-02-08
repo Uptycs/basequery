@@ -27,9 +27,9 @@ class SQLiteUtilTests : public testing::Test {
   void SetUp() override {
     platformSetup();
     registryAndPluginInit();
-    Flag::updateValue("enable_tables",
-                      "test_table,time,process_events,osquery_info,file,users,"
-                      "curl,fake_table");
+    Flag::updateValue(
+        "enable_tables",
+        "test_table,time,osquery_info,osquery_flags,processes,fake_table");
     Flag::updateValue("disable_tables", "fake_table");
   }
 };
@@ -187,14 +187,6 @@ TEST_F(SQLiteUtilTests, test_affected_tables) {
 
 TEST_F(SQLiteUtilTests, test_table_attributes_event_based) {
   {
-    SQLInternal sql_internal("select * from process_events");
-    if (!isPlatform(PlatformType::TYPE_WINDOWS)) {
-      EXPECT_TRUE(sql_internal.getStatus().ok());
-      EXPECT_TRUE(sql_internal.eventBased());
-    }
-  }
-
-  {
     SQLInternal sql_internal("select * from time");
     EXPECT_TRUE(sql_internal.getStatus().ok());
     EXPECT_FALSE(sql_internal.eventBased());
@@ -224,29 +216,30 @@ TEST_F(SQLiteUtilTests, test_get_query_columns) {
 TEST_F(SQLiteUtilTests, test_get_query_tables_failed) {
   auto dbc = getTestDBC();
   QueryDataTyped results;
-  EXPECT_FALSE(queryInternal("SELECT * FROM file", results, dbc).ok());
+  EXPECT_FALSE(queryInternal("SELECT * FROM blah", results, dbc).ok());
 }
 
 TEST_F(SQLiteUtilTests, test_get_query_tables) {
   std::string query =
-      "SELECT * FROM time, osquery_info, (SELECT * FROM users) ff GROUP BY pid";
+      "SELECT * FROM time, osquery_info, (SELECT * FROM osquery_flags) ff "
+      "GROUP BY pid";
   std::vector<std::string> tables;
   auto status = getQueryTables(query, tables);
   EXPECT_TRUE(status.ok());
 
-  std::vector<std::string> expected = {"time", "osquery_info", "users"};
+  std::vector<std::string> expected = {"time", "osquery_info", "osquery_flags"};
   EXPECT_EQ(expected, tables);
 }
 
 TEST_F(SQLiteUtilTests, test_get_query_tables_required) {
   std::string query =
-      "SELECT * FROM time, osquery_info, (SELECT * FROM file where path = "
-      "'osquery') ff GROUP BY pid";
+      "SELECT * FROM time, osquery_info, (SELECT * FROM processes) ff GROUP BY "
+      "ff.pid";
   std::vector<std::string> tables;
   auto status = getQueryTables(query, tables);
   EXPECT_TRUE(status.ok());
 
-  std::vector<std::string> expected = {"time", "osquery_info", "file"};
+  std::vector<std::string> expected = {"time", "osquery_info", "processes"};
   EXPECT_EQ(expected, tables);
 }
 
@@ -264,29 +257,31 @@ TEST_F(SQLiteUtilTests, test_query_planner) {
   auto dbc = getTestDBC();
   TableColumns columns;
 
-  std::string query = "select path, path from file";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-
-  query = "select path, path from file where path in ('osquery', 'noquery')";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE, TEXT_TYPE}));
-
-  query = "select path, seconds from file, time where path LIKE 'osquery'";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE, INTEGER_TYPE}));
-
-  query = "select path || path from file";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-
-  query = "select path || path from file where path = 'osquery'";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE}));
-
-  query = "select seconds, path || path from file, time ";
+  std::string query = "select path, path from processes";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
 
   query =
-      "select seconds, path || path from file, time where path in ('osquery')";
+      "select path, path from processes where path in ('osquery', 'noquery')";
+  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
+  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE, TEXT_TYPE}));
+
+  query = "select path, seconds from processes, time where path LIKE 'osquery'";
+  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
+  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE, INTEGER_TYPE}));
+
+  query = "select path || path from processes";
+  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
+
+  query = "select path || path from processes where path = 'osquery'";
+  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
+  EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE}));
+
+  query = "select seconds, path || path from processes, time ";
+  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
+
+  query =
+      "select seconds, path || path from processes, time where path in "
+      "('osquery')";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
   EXPECT_EQ(getTypes(columns), TypeList({INTEGER_TYPE, TEXT_TYPE}));
 
@@ -303,10 +298,10 @@ TEST_F(SQLiteUtilTests, test_query_planner) {
   EXPECT_EQ(getTypes(columns),
             TypeList({BIGINT_TYPE, BIGINT_TYPE, INTEGER_TYPE}));
 
-  query = "select 1, 'path', path from file";
+  query = "select 1, 'path', path from processes";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
 
-  query = "select 1, 'path', path from file where path = 'os'";
+  query = "select 1, 'path', path from processes where path = 'os'";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
   EXPECT_EQ(getTypes(columns), TypeList({INTEGER_TYPE, TEXT_TYPE, TEXT_TYPE}));
 
@@ -329,19 +324,19 @@ TEST_F(SQLiteUtilTests, test_query_planner) {
             TypeList({INTEGER_TYPE, INTEGER_TYPE, BIGINT_TYPE}));
 
   query =
-      "select f1.*, seconds, f2.directory from (select path || path from file) "
-      "f1, file as f2, time";
+      "select f1.*, seconds, f2.name from (select path || path from processes) "
+      "f1, processes as f2, time";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
 
   query =
-      "select f1.*, seconds, f2.directory from (select path || path from file) "
-      "f1, file as f2, time where path in ('query', 'query')";
+      "select f1.*, seconds, f2.name from (select path || path from processes) "
+      "f1, processes as f2, time where path in ('query', 'query')";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
 
   query =
-      "select f1.*, seconds, f2.directory from (select path || path from file "
+      "select f1.*, seconds, f2.name from (select path || path from processes "
       "where path = 'query') "
-      "f1, file as f2, time where path in ('query', 'query')";
+      "f1, processes as f2, time where path in ('query', 'query')";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
   EXPECT_EQ(getTypes(columns), TypeList({TEXT_TYPE, INTEGER_TYPE, TEXT_TYPE}));
 
@@ -368,16 +363,6 @@ TEST_F(SQLiteUtilTests, test_query_planner) {
   query = "select CAST(seconds AS BLOB) FROM time";
   EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
   EXPECT_EQ(getTypes(columns), TypeList({BLOB_TYPE}));
-
-  query = "select url, round_trip_time, response_code from curl";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-
-  query =
-      "select url, round_trip_time, response_code from curl where url = "
-      "'https://github.com/osquery/osquery'";
-  EXPECT_TRUE(getQueryColumnsInternal(query, columns, dbc).ok());
-  EXPECT_EQ(getTypes(columns),
-            TypeList({TEXT_TYPE, BIGINT_TYPE, INTEGER_TYPE}));
 }
 
 using TypeMap = std::map<std::string, ColumnType>;
@@ -420,8 +405,8 @@ void testTypesExpected(std::string query, TypeMap expectedTypes) {
 
 TEST_F(SQLiteUtilTests, test_column_type_determination) {
   // Correct identification of text and ints
-  testTypesExpected("select path, inode from file where path like '%'",
-                    TypeMap({{"path", TEXT_TYPE}, {"inode", INTEGER_TYPE}}));
+  testTypesExpected("select path, threads from processes where path like '%'",
+                    TypeMap({{"path", TEXT_TYPE}, {"threads", INTEGER_TYPE}}));
   // Correctly treating BLOBs as text
   testTypesExpected("select CAST(seconds AS BLOB) as seconds FROM time",
                     TypeMap({{"seconds", TEXT_TYPE}}));
@@ -445,7 +430,7 @@ TEST_F(SQLiteUtilTests, test_enable) {
   // Shadow is not in enable_tables.
   ASSERT_TRUE(SQLiteDBManager::isDisabled("shadow"));
   // Users is explicitely in enable_tables.
-  ASSERT_FALSE(SQLiteDBManager::isDisabled("users"));
+  ASSERT_FALSE(SQLiteDBManager::isDisabled("time"));
   // Fake_table is explicitely in enabled_tables and
   // disable_tables, it should be disabled.
   ASSERT_TRUE(SQLiteDBManager::isDisabled("fake_table"));

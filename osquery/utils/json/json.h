@@ -13,7 +13,6 @@
 
 #include <osquery/utils/only_movable.h>
 #include <osquery/utils/status/status.h>
-#include <osquery/utils/system/system.h>
 
 #ifdef WIN32
 #pragma warning(push, 3)

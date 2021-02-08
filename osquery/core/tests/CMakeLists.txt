@@ -69,10 +69,6 @@ function(generateOsqueryCoreTestsWatcherpermissionstestsTest)
     watcher_tests.cpp
   )
 
-  if(DEFINED PLATFORM_POSIX)
-    list(APPEND source_files posix/permissions_tests.cpp)
-  endif()
-
   add_osquery_executable(osquery_core_tests_watcherpermissionstests-test ${source_files})
 
   target_link_libraries(osquery_core_tests_watcherpermissionstests-test PRIVATE

@@ -434,7 +434,7 @@ TEST_F(ConfigTests, test_content_update) {
   // Update, then clear, packs should have been cleared.
   get().update(config_data);
   auto source_hash = get().getHash(source);
-  EXPECT_EQ("dfae832a62a3e3a51760334184364b7d66468ccc", source_hash);
+  EXPECT_EQ("579a6be73c313379162d03f4e0763867946485fa", source_hash);
 
   size_t count = 0;
   auto packCounter = [&count](const Pack& pack) { count++; };
@@ -636,7 +636,7 @@ TEST_F(ConfigTests, test_plugin_reconfigure) {
   rf.registry("config_parser")->remove("placebo");
 }
 
-TEST_F(ConfigTests, test_pack_file_paths) {
+TEST_F(ConfigTests, DISABLED_test_pack_file_paths) {
   size_t count = 0;
   auto fileCounter = [&count](const std::string& c,
                               const std::vector<std::string>& files) {

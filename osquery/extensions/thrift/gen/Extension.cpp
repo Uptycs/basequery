@@ -6,12 +6,13 @@
  */
 #include "Extension.h"
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 Extension_ping_args::~Extension_ping_args() noexcept {}
 
-uint32_t Extension_ping_args::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_ping_args::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -22,9 +23,7 @@ uint32_t Extension_ping_args::read(::apache::thrift::protocol::TProtocol* iprot)
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
@@ -38,7 +37,8 @@ uint32_t Extension_ping_args::read(::apache::thrift::protocol::TProtocol* iprot)
   return xfer;
 }
 
-uint32_t Extension_ping_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_ping_args::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_ping_args");
@@ -50,7 +50,8 @@ uint32_t Extension_ping_args::write(::apache::thrift::protocol::TProtocol* oprot
 
 Extension_ping_pargs::~Extension_ping_pargs() noexcept {}
 
-uint32_t Extension_ping_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_ping_pargs::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_ping_pargs");
@@ -62,8 +63,8 @@ uint32_t Extension_ping_pargs::write(::apache::thrift::protocol::TProtocol* opro
 
 Extension_ping_result::~Extension_ping_result() noexcept {}
 
-uint32_t Extension_ping_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_ping_result::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -74,26 +75,23 @@ uint32_t Extension_ping_result::read(::apache::thrift::protocol::TProtocol* ipro
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
-          xfer += this->success.read(iprot);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
+    switch (fid) {
+    case 0:
+      if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+        xfer += this->success.read(iprot);
+        this->__isset.success = true;
+      } else {
         xfer += iprot->skip(ftype);
-        break;
+      }
+      break;
+    default:
+      xfer += iprot->skip(ftype);
+      break;
     }
     xfer += iprot->readFieldEnd();
   }
@@ -103,14 +101,15 @@ uint32_t Extension_ping_result::read(::apache::thrift::protocol::TProtocol* ipro
   return xfer;
 }
 
-uint32_t Extension_ping_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
+uint32_t Extension_ping_result::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
 
   xfer += oprot->writeStructBegin("Extension_ping_result");
 
   if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += oprot->writeFieldBegin(
+        "success", ::apache::thrift::protocol::T_STRUCT, 0);
     xfer += this->success.write(oprot);
     xfer += oprot->writeFieldEnd();
   }
@@ -121,8 +120,8 @@ uint32_t Extension_ping_result::write(::apache::thrift::protocol::TProtocol* opr
 
 Extension_ping_presult::~Extension_ping_presult() noexcept {}
 
-uint32_t Extension_ping_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_ping_presult::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -133,26 +132,23 @@ uint32_t Extension_ping_presult::read(::apache::thrift::protocol::TProtocol* ipr
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
-          xfer += (*(this->success)).read(iprot);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
+    switch (fid) {
+    case 0:
+      if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+        xfer += (*(this->success)).read(iprot);
+        this->__isset.success = true;
+      } else {
         xfer += iprot->skip(ftype);
-        break;
+      }
+      break;
+    default:
+      xfer += iprot->skip(ftype);
+      break;
     }
     xfer += iprot->readFieldEnd();
   }
@@ -164,8 +160,8 @@ uint32_t Extension_ping_presult::read(::apache::thrift::protocol::TProtocol* ipr
 
 Extension_call_args::~Extension_call_args() noexcept {}
 
-uint32_t Extension_call_args::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_call_args::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -176,56 +172,53 @@ uint32_t Extension_call_args::read(::apache::thrift::protocol::TProtocol* iprot)
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    switch (fid)
-    {
-      case 1:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->registry);
-          this->__isset.registry = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 2:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->item);
-          this->__isset.item = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 3:
-        if (ftype == ::apache::thrift::protocol::T_MAP) {
-          {
-            this->request.clear();
-            uint32_t _size34;
-            ::apache::thrift::protocol::TType _ktype35;
-            ::apache::thrift::protocol::TType _vtype36;
-            xfer += iprot->readMapBegin(_ktype35, _vtype36, _size34);
-            uint32_t _i38;
-            for (_i38 = 0; _i38 < _size34; ++_i38) {
-              std::string _key39;
-              xfer += iprot->readString(_key39);
-              std::string& _val40 = this->request[_key39];
-              xfer += iprot->readString(_val40);
-            }
-            xfer += iprot->readMapEnd();
-          }
-          this->__isset.request = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
+    switch (fid) {
+    case 1:
+      if (ftype == ::apache::thrift::protocol::T_STRING) {
+        xfer += iprot->readString(this->registry);
+        this->__isset.registry = true;
+      } else {
         xfer += iprot->skip(ftype);
-        break;
+      }
+      break;
+    case 2:
+      if (ftype == ::apache::thrift::protocol::T_STRING) {
+        xfer += iprot->readString(this->item);
+        this->__isset.item = true;
+      } else {
+        xfer += iprot->skip(ftype);
+      }
+      break;
+    case 3:
+      if (ftype == ::apache::thrift::protocol::T_MAP) {
+        {
+          this->request.clear();
+          uint32_t _size34;
+          ::apache::thrift::protocol::TType _ktype35;
+          ::apache::thrift::protocol::TType _vtype36;
+          xfer += iprot->readMapBegin(_ktype35, _vtype36, _size34);
+          uint32_t _i38;
+          for (_i38 = 0; _i38 < _size34; ++_i38) {
+            std::string _key39;
+            xfer += iprot->readString(_key39);
+            std::string& _val40 = this->request[_key39];
+            xfer += iprot->readString(_val40);
+          }
+          xfer += iprot->readMapEnd();
+        }
+        this->__isset.request = true;
+      } else {
+        xfer += iprot->skip(ftype);
+      }
+      break;
+    default:
+      xfer += iprot->skip(ftype);
+      break;
     }
     xfer += iprot->readFieldEnd();
   }
@@ -235,22 +228,28 @@ uint32_t Extension_call_args::read(::apache::thrift::protocol::TProtocol* iprot)
   return xfer;
 }
 
-uint32_t Extension_call_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_call_args::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_call_args");
 
-  xfer += oprot->writeFieldBegin("registry", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeFieldBegin(
+      "registry", ::apache::thrift::protocol::T_STRING, 1);
   xfer += oprot->writeString(this->registry);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("item", ::apache::thrift::protocol::T_STRING, 2);
+  xfer +=
+      oprot->writeFieldBegin("item", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString(this->item);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_MAP, 3);
+  xfer +=
+      oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_MAP, 3);
   {
-    xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->request.size()));
+    xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING,
+                                 ::apache::thrift::protocol::T_STRING,
+                                 static_cast<uint32_t>(this->request.size()));
     std::map<std::string, std::string>::const_iterator _iter41;
     for (_iter41 = this->request.begin(); _iter41 != this->request.end();
          ++_iter41) {
@@ -268,22 +267,29 @@ uint32_t Extension_call_args::write(::apache::thrift::protocol::TProtocol* oprot
 
 Extension_call_pargs::~Extension_call_pargs() noexcept {}
 
-uint32_t Extension_call_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_call_pargs::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_call_pargs");
 
-  xfer += oprot->writeFieldBegin("registry", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeFieldBegin(
+      "registry", ::apache::thrift::protocol::T_STRING, 1);
   xfer += oprot->writeString((*(this->registry)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("item", ::apache::thrift::protocol::T_STRING, 2);
+  xfer +=
+      oprot->writeFieldBegin("item", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString((*(this->item)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_MAP, 3);
+  xfer +=
+      oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_MAP, 3);
   {
-    xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->request)).size()));
+    xfer +=
+        oprot->writeMapBegin(::apache::thrift::protocol::T_STRING,
+                             ::apache::thrift::protocol::T_STRING,
+                             static_cast<uint32_t>((*(this->request)).size()));
     std::map<std::string, std::string>::const_iterator _iter42;
     for (_iter42 = (*(this->request)).begin();
          _iter42 != (*(this->request)).end();
@@ -302,8 +308,8 @@ uint32_t Extension_call_pargs::write(::apache::thrift::protocol::TProtocol* opro
 
 Extension_call_result::~Extension_call_result() noexcept {}
 
-uint32_t Extension_call_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_call_result::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -314,26 +320,23 @@ uint32_t Extension_call_result::read(::apache::thrift::protocol::TProtocol* ipro
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
-          xfer += this->success.read(iprot);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
+    switch (fid) {
+    case 0:
+      if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+        xfer += this->success.read(iprot);
+        this->__isset.success = true;
+      } else {
         xfer += iprot->skip(ftype);
-        break;
+      }
+      break;
+    default:
+      xfer += iprot->skip(ftype);
+      break;
     }
     xfer += iprot->readFieldEnd();
   }
@@ -343,14 +346,15 @@ uint32_t Extension_call_result::read(::apache::thrift::protocol::TProtocol* ipro
   return xfer;
 }
 
-uint32_t Extension_call_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
+uint32_t Extension_call_result::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
 
   xfer += oprot->writeStructBegin("Extension_call_result");
 
   if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += oprot->writeFieldBegin(
+        "success", ::apache::thrift::protocol::T_STRUCT, 0);
     xfer += this->success.write(oprot);
     xfer += oprot->writeFieldEnd();
   }
@@ -361,8 +365,8 @@ uint32_t Extension_call_result::write(::apache::thrift::protocol::TProtocol* opr
 
 Extension_call_presult::~Extension_call_presult() noexcept {}
 
-uint32_t Extension_call_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_call_presult::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -373,26 +377,23 @@ uint32_t Extension_call_presult::read(::apache::thrift::protocol::TProtocol* ipr
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
-          xfer += (*(this->success)).read(iprot);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
+    switch (fid) {
+    case 0:
+      if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+        xfer += (*(this->success)).read(iprot);
+        this->__isset.success = true;
+      } else {
         xfer += iprot->skip(ftype);
-        break;
+      }
+      break;
+    default:
+      xfer += iprot->skip(ftype);
+      break;
     }
     xfer += iprot->readFieldEnd();
   }
@@ -404,8 +405,8 @@ uint32_t Extension_call_presult::read(::apache::thrift::protocol::TProtocol* ipr
 
 Extension_shutdown_args::~Extension_shutdown_args() noexcept {}
 
-uint32_t Extension_shutdown_args::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_shutdown_args::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -416,9 +417,7 @@ uint32_t Extension_shutdown_args::read(::apache::thrift::protocol::TProtocol* ip
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
@@ -432,7 +431,8 @@ uint32_t Extension_shutdown_args::read(::apache::thrift::protocol::TProtocol* ip
   return xfer;
 }
 
-uint32_t Extension_shutdown_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_shutdown_args::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_shutdown_args");
@@ -444,7 +444,8 @@ uint32_t Extension_shutdown_args::write(::apache::thrift::protocol::TProtocol* o
 
 Extension_shutdown_pargs::~Extension_shutdown_pargs() noexcept {}
 
-uint32_t Extension_shutdown_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+uint32_t Extension_shutdown_pargs::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Extension_shutdown_pargs");
@@ -456,8 +457,8 @@ uint32_t Extension_shutdown_pargs::write(::apache::thrift::protocol::TProtocol* 
 
 Extension_shutdown_result::~Extension_shutdown_result() noexcept {}
 
-uint32_t Extension_shutdown_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_shutdown_result::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -468,9 +469,7 @@ uint32_t Extension_shutdown_result::read(::apache::thrift::protocol::TProtocol* 
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
@@ -484,8 +483,8 @@ uint32_t Extension_shutdown_result::read(::apache::thrift::protocol::TProtocol* 
   return xfer;
 }
 
-uint32_t Extension_shutdown_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
+uint32_t Extension_shutdown_result::write(
+    ::apache::thrift::protocol::TProtocol* oprot) const {
   uint32_t xfer = 0;
 
   xfer += oprot->writeStructBegin("Extension_shutdown_result");
@@ -497,8 +496,8 @@ uint32_t Extension_shutdown_result::write(::apache::thrift::protocol::TProtocol*
 
 Extension_shutdown_presult::~Extension_shutdown_presult() noexcept {}
 
-uint32_t Extension_shutdown_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
+uint32_t Extension_shutdown_presult::read(
+    ::apache::thrift::protocol::TProtocol* iprot) {
   ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
   uint32_t xfer = 0;
   std::string fname;
@@ -509,9 +508,7 @@ uint32_t Extension_shutdown_presult::read(::apache::thrift::protocol::TProtocol*
 
   using ::apache::thrift::protocol::TProtocolException;
 
-
-  while (true)
-  {
+  while (true) {
     xfer += iprot->readFieldBegin(fname, ftype, fid);
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
@@ -525,14 +522,12 @@ uint32_t Extension_shutdown_presult::read(::apache::thrift::protocol::TProtocol*
   return xfer;
 }
 
-void ExtensionClient::ping(ExtensionStatus& _return)
-{
+void ExtensionClient::ping(ExtensionStatus& _return) {
   send_ping();
   recv_ping(_return);
 }
 
-void ExtensionClient::send_ping()
-{
+void ExtensionClient::send_ping() {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("ping", ::apache::thrift::protocol::T_CALL, cseqid);
 
@@ -544,9 +539,7 @@ void ExtensionClient::send_ping()
   oprot_->getTransport()->flush();
 }
 
-void ExtensionClient::recv_ping(ExtensionStatus& _return)
-{
-
+void ExtensionClient::recv_ping(ExtensionStatus& _return) {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -579,17 +572,22 @@ void ExtensionClient::recv_ping(ExtensionStatus& _return)
     // _return pointer has now been filled
     return;
   }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "ping failed: unknown result");
+  throw ::apache::thrift::TApplicationException(
+      ::apache::thrift::TApplicationException::MISSING_RESULT,
+      "ping failed: unknown result");
 }
 
-void ExtensionClient::call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request)
-{
+void ExtensionClient::call(ExtensionResponse& _return,
+                           const std::string& registry,
+                           const std::string& item,
+                           const ExtensionPluginRequest& request) {
   send_call(registry, item, request);
   recv_call(_return);
 }
 
-void ExtensionClient::send_call(const std::string& registry, const std::string& item, const ExtensionPluginRequest& request)
-{
+void ExtensionClient::send_call(const std::string& registry,
+                                const std::string& item,
+                                const ExtensionPluginRequest& request) {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("call", ::apache::thrift::protocol::T_CALL, cseqid);
 
@@ -604,9 +602,7 @@ void ExtensionClient::send_call(const std::string& registry, const std::string& 
   oprot_->getTransport()->flush();
 }
 
-void ExtensionClient::recv_call(ExtensionResponse& _return)
-{
-
+void ExtensionClient::recv_call(ExtensionResponse& _return) {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -639,19 +635,20 @@ void ExtensionClient::recv_call(ExtensionResponse& _return)
     // _return pointer has now been filled
     return;
   }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "call failed: unknown result");
+  throw ::apache::thrift::TApplicationException(
+      ::apache::thrift::TApplicationException::MISSING_RESULT,
+      "call failed: unknown result");
 }
 
-void ExtensionClient::shutdown()
-{
+void ExtensionClient::shutdown() {
   send_shutdown();
   recv_shutdown();
 }
 
-void ExtensionClient::send_shutdown()
-{
+void ExtensionClient::send_shutdown() {
   int32_t cseqid = 0;
-  oprot_->writeMessageBegin("shutdown", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin(
+      "shutdown", ::apache::thrift::protocol::T_CALL, cseqid);
 
   Extension_shutdown_pargs args;
   args.write(oprot_);
@@ -661,9 +658,7 @@ void ExtensionClient::send_shutdown()
   oprot_->getTransport()->flush();
 }
 
-void ExtensionClient::recv_shutdown()
-{
-
+void ExtensionClient::recv_shutdown() {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -694,15 +689,23 @@ void ExtensionClient::recv_shutdown()
   return;
 }
 
-bool ExtensionProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
+bool ExtensionProcessor::dispatchCall(
+    ::apache::thrift::protocol::TProtocol* iprot,
+    ::apache::thrift::protocol::TProtocol* oprot,
+    const std::string& fname,
+    int32_t seqid,
+    void* callContext) {
   ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
   if (pfn == processMap_.end()) {
     iprot->skip(::apache::thrift::protocol::T_STRUCT);
     iprot->readMessageEnd();
     iprot->getTransport()->readEnd();
-    ::apache::thrift::TApplicationException x(::apache::thrift::TApplicationException::UNKNOWN_METHOD, "Invalid method name: '"+fname+"'");
-    oprot->writeMessageBegin(fname, ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    ::apache::thrift::TApplicationException x(
+        ::apache::thrift::TApplicationException::UNKNOWN_METHOD,
+        "Invalid method name: '" + fname + "'");
+    oprot->writeMessageBegin(
+        fname, ::apache::thrift::protocol::T_EXCEPTION, seqid);
     x.write(oprot);
     oprot->writeMessageEnd();
     oprot->getTransport()->writeEnd();
@@ -713,13 +716,17 @@ bool ExtensionProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* ipr
   return true;
 }
 
-void ExtensionProcessor::process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
+void ExtensionProcessor::process_ping(
+    int32_t seqid,
+    ::apache::thrift::protocol::TProtocol* iprot,
+    ::apache::thrift::protocol::TProtocol* oprot,
+    void* callContext) {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
     ctx = this->eventHandler_->getContext("Extension.ping", callContext);
   }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "Extension.ping");
+  ::apache::thrift::TProcessorContextFreer freer(
+      this->eventHandler_.get(), ctx, "Extension.ping");
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->preRead(ctx, "Extension.ping");
@@ -744,7 +751,8 @@ void ExtensionProcessor::process_ping(int32_t seqid, ::apache::thrift::protocol:
     }
 
     ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("ping", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    oprot->writeMessageBegin(
+        "ping", ::apache::thrift::protocol::T_EXCEPTION, seqid);
     x.write(oprot);
     oprot->writeMessageEnd();
     oprot->getTransport()->writeEnd();
@@ -767,13 +775,17 @@ void ExtensionProcessor::process_ping(int32_t seqid, ::apache::thrift::protocol:
   }
 }
 
-void ExtensionProcessor::process_call(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
+void ExtensionProcessor::process_call(
+    int32_t seqid,
+    ::apache::thrift::protocol::TProtocol* iprot,
+    ::apache::thrift::protocol::TProtocol* oprot,
+    void* callContext) {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
     ctx = this->eventHandler_->getContext("Extension.call", callContext);
   }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "Extension.call");
+  ::apache::thrift::TProcessorContextFreer freer(
+      this->eventHandler_.get(), ctx, "Extension.call");
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->preRead(ctx, "Extension.call");
@@ -798,7 +810,8 @@ void ExtensionProcessor::process_call(int32_t seqid, ::apache::thrift::protocol:
     }
 
     ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("call", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    oprot->writeMessageBegin(
+        "call", ::apache::thrift::protocol::T_EXCEPTION, seqid);
     x.write(oprot);
     oprot->writeMessageEnd();
     oprot->getTransport()->writeEnd();
@@ -821,13 +834,17 @@ void ExtensionProcessor::process_call(int32_t seqid, ::apache::thrift::protocol:
   }
 }
 
-void ExtensionProcessor::process_shutdown(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
+void ExtensionProcessor::process_shutdown(
+    int32_t seqid,
+    ::apache::thrift::protocol::TProtocol* iprot,
+    ::apache::thrift::protocol::TProtocol* oprot,
+    void* callContext) {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
     ctx = this->eventHandler_->getContext("Extension.shutdown", callContext);
   }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "Extension.shutdown");
+  ::apache::thrift::TProcessorContextFreer freer(
+      this->eventHandler_.get(), ctx, "Extension.shutdown");
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->preRead(ctx, "Extension.shutdown");
@@ -851,7 +868,8 @@ void ExtensionProcessor::process_shutdown(int32_t seqid, ::apache::thrift::proto
     }
 
     ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("shutdown", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    oprot->writeMessageBegin(
+        "shutdown", ::apache::thrift::protocol::T_EXCEPTION, seqid);
     x.write(oprot);
     oprot->writeMessageEnd();
     oprot->getTransport()->writeEnd();
@@ -863,7 +881,8 @@ void ExtensionProcessor::process_shutdown(int32_t seqid, ::apache::thrift::proto
     this->eventHandler_->preWrite(ctx, "Extension.shutdown");
   }
 
-  oprot->writeMessageBegin("shutdown", ::apache::thrift::protocol::T_REPLY, seqid);
+  oprot->writeMessageBegin(
+      "shutdown", ::apache::thrift::protocol::T_REPLY, seqid);
   result.write(oprot);
   oprot->writeMessageEnd();
   bytes = oprot->getTransport()->writeEnd();
@@ -877,7 +896,7 @@ void ExtensionProcessor::process_shutdown(int32_t seqid, ::apache::thrift::proto
 ::std::shared_ptr<::apache::thrift::TProcessor>
 ExtensionProcessorFactory::getProcessor(
     const ::apache::thrift::TConnectionInfo& connInfo) {
-  ::apache::thrift::ReleaseHandler< ExtensionIfFactory > cleanup(handlerFactory_);
+  ::apache::thrift::ReleaseHandler<ExtensionIfFactory> cleanup(handlerFactory_);
   ::std::shared_ptr<ExtensionIf> handler(handlerFactory_->getHandler(connInfo),
                                          cleanup);
   ::std::shared_ptr<::apache::thrift::TProcessor> processor(
@@ -885,14 +904,12 @@ ExtensionProcessorFactory::getProcessor(
   return processor;
 }
 
-void ExtensionConcurrentClient::ping(ExtensionStatus& _return)
-{
+void ExtensionConcurrentClient::ping(ExtensionStatus& _return) {
   int32_t seqid = send_ping();
   recv_ping(_return, seqid);
 }
 
-int32_t ExtensionConcurrentClient::send_ping()
-{
+int32_t ExtensionConcurrentClient::send_ping() {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
   oprot_->writeMessageBegin("ping", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -908,9 +925,8 @@ int32_t ExtensionConcurrentClient::send_ping()
   return cseqid;
 }
 
-void ExtensionConcurrentClient::recv_ping(ExtensionStatus& _return, const int32_t seqid)
-{
-
+void ExtensionConcurrentClient::recv_ping(ExtensionStatus& _return,
+                                          const int32_t seqid) {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -920,11 +936,11 @@ void ExtensionConcurrentClient::recv_ping(ExtensionStatus& _return, const int32_
   ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(),
                                                         seqid);
 
-  while(true) {
+  while (true) {
     if (!this->sync_->getPending(fname, mtype, rseqid)) {
       iprot_->readMessageBegin(fname, mtype, rseqid);
     }
-    if(seqid == rseqid) {
+    if (seqid == rseqid) {
       if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
         ::apache::thrift::TApplicationException x;
         x.read(iprot_);
@@ -959,24 +975,31 @@ void ExtensionConcurrentClient::recv_ping(ExtensionStatus& _return, const int32_
         return;
       }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "ping failed: unknown result");
+      throw ::apache::thrift::TApplicationException(
+          ::apache::thrift::TApplicationException::MISSING_RESULT,
+          "ping failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
 
-    // this will temporarily unlock the readMutex, and let other clients get work done
+    // this will temporarily unlock the readMutex, and let other clients get
+    // work done
     this->sync_->waitForWork(seqid);
   } // end while(true)
 }
 
-void ExtensionConcurrentClient::call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request)
-{
+void ExtensionConcurrentClient::call(ExtensionResponse& _return,
+                                     const std::string& registry,
+                                     const std::string& item,
+                                     const ExtensionPluginRequest& request) {
   int32_t seqid = send_call(registry, item, request);
   recv_call(_return, seqid);
 }
 
-int32_t ExtensionConcurrentClient::send_call(const std::string& registry, const std::string& item, const ExtensionPluginRequest& request)
-{
+int32_t ExtensionConcurrentClient::send_call(
+    const std::string& registry,
+    const std::string& item,
+    const ExtensionPluginRequest& request) {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
   oprot_->writeMessageBegin("call", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -995,9 +1018,8 @@ int32_t ExtensionConcurrentClient::send_call(const std::string& registry, const 
   return cseqid;
 }
 
-void ExtensionConcurrentClient::recv_call(ExtensionResponse& _return, const int32_t seqid)
-{
-
+void ExtensionConcurrentClient::recv_call(ExtensionResponse& _return,
+                                          const int32_t seqid) {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -1007,11 +1029,11 @@ void ExtensionConcurrentClient::recv_call(ExtensionResponse& _return, const int3
   ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(),
                                                         seqid);
 
-  while(true) {
+  while (true) {
     if (!this->sync_->getPending(fname, mtype, rseqid)) {
       iprot_->readMessageBegin(fname, mtype, rseqid);
     }
-    if(seqid == rseqid) {
+    if (seqid == rseqid) {
       if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
         ::apache::thrift::TApplicationException x;
         x.read(iprot_);
@@ -1046,27 +1068,29 @@ void ExtensionConcurrentClient::recv_call(ExtensionResponse& _return, const int3
         return;
       }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "call failed: unknown result");
+      throw ::apache::thrift::TApplicationException(
+          ::apache::thrift::TApplicationException::MISSING_RESULT,
+          "call failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
 
-    // this will temporarily unlock the readMutex, and let other clients get work done
+    // this will temporarily unlock the readMutex, and let other clients get
+    // work done
     this->sync_->waitForWork(seqid);
   } // end while(true)
 }
 
-void ExtensionConcurrentClient::shutdown()
-{
+void ExtensionConcurrentClient::shutdown() {
   int32_t seqid = send_shutdown();
   recv_shutdown(seqid);
 }
 
-int32_t ExtensionConcurrentClient::send_shutdown()
-{
+int32_t ExtensionConcurrentClient::send_shutdown() {
   int32_t cseqid = this->sync_->generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
-  oprot_->writeMessageBegin("shutdown", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin(
+      "shutdown", ::apache::thrift::protocol::T_CALL, cseqid);
 
   Extension_shutdown_pargs args;
   args.write(oprot_);
@@ -1079,9 +1103,7 @@ int32_t ExtensionConcurrentClient::send_shutdown()
   return cseqid;
 }
 
-void ExtensionConcurrentClient::recv_shutdown(const int32_t seqid)
-{
-
+void ExtensionConcurrentClient::recv_shutdown(const int32_t seqid) {
   int32_t rseqid = 0;
   std::string fname;
   ::apache::thrift::protocol::TMessageType mtype;
@@ -1091,11 +1113,11 @@ void ExtensionConcurrentClient::recv_shutdown(const int32_t seqid)
   ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(),
                                                         seqid);
 
-  while(true) {
+  while (true) {
     if (!this->sync_->getPending(fname, mtype, rseqid)) {
       iprot_->readMessageBegin(fname, mtype, rseqid);
     }
-    if(seqid == rseqid) {
+    if (seqid == rseqid) {
       if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
         ::apache::thrift::TApplicationException x;
         x.read(iprot_);
@@ -1129,10 +1151,11 @@ void ExtensionConcurrentClient::recv_shutdown(const int32_t seqid)
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
 
-    // this will temporarily unlock the readMutex, and let other clients get work done
+    // this will temporarily unlock the readMutex, and let other clients get
+    // work done
     this->sync_->waitForWork(seqid);
   } // end while(true)
 }
 
-}} // namespace
-
+} // namespace extensions
+} // namespace osquery

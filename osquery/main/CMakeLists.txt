@@ -43,7 +43,6 @@ function(generateOsqueryMain)
     osquery_devtools
     osquery_dispatcher
     osquery_dispatcher_scheduler
-    osquery_experimental_eventsstream_registry
     osquery_extensions
     osquery_extensions_implthrift
     osquery_logger_datalogger
@@ -71,13 +70,11 @@ function(generateOsqueryMain)
     thirdparty_boost
   )
 
-  if(OSQUERY_BUILD_AWS)
-    target_link_libraries(osquery_main PUBLIC
-      plugins_logger_awsfirehose
-      plugins_logger_awskinesis
-      plugins_logger_awslogforwarder
-    )
-  endif()
+  target_link_libraries(osquery_main PUBLIC
+    plugins_logger_awsfirehose
+    plugins_logger_awskinesis
+    plugins_logger_awslogforwarder
+  )
 
   if(DEFINED PLATFORM_WINDOWS)
     target_link_libraries(osquery_main PUBLIC

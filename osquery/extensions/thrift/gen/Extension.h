@@ -12,18 +12,22 @@
 #include <thrift/TDispatchProcessor.h>
 #include <thrift/async/TConcurrentClientSyncInfo.h>
 
-namespace osquery { namespace extensions {
+namespace osquery {
+namespace extensions {
 
 #ifdef _MSC_VER
-  #pragma warning( push )
-  #pragma warning (disable : 4250 ) //inheriting methods via dominance 
+#pragma warning(push)
+#pragma warning(disable : 4250) // inheriting methods via dominance
 #endif
 
 class ExtensionIf {
  public:
   virtual ~ExtensionIf() {}
   virtual void ping(ExtensionStatus& _return) = 0;
-  virtual void call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request) = 0;
+  virtual void call(ExtensionResponse& _return,
+                    const std::string& registry,
+                    const std::string& item,
+                    const ExtensionPluginRequest& request) = 0;
   virtual void shutdown() = 0;
 };
 
@@ -33,7 +37,8 @@ class ExtensionIfFactory {
 
   virtual ~ExtensionIfFactory() {}
 
-  virtual ExtensionIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) = 0;
+  virtual ExtensionIf* getHandler(
+      const ::apache::thrift::TConnectionInfo& connInfo) = 0;
   virtual void releaseHandler(ExtensionIf* /* handler */) = 0;
 };
 
@@ -58,7 +63,10 @@ class ExtensionNull : virtual public ExtensionIf {
   void ping(ExtensionStatus& /* _return */) {
     return;
   }
-  void call(ExtensionResponse& /* _return */, const std::string& /* registry */, const std::string& /* item */, const ExtensionPluginRequest& /* request */) {
+  void call(ExtensionResponse& /* _return */,
+            const std::string& /* registry */,
+            const std::string& /* item */,
+            const ExtensionPluginRequest& /* request */) {
     return;
   }
   void shutdown() {
@@ -66,57 +74,48 @@ class ExtensionNull : virtual public ExtensionIf {
   }
 };
 
-
 class Extension_ping_args {
  public:
-
   Extension_ping_args(const Extension_ping_args&);
   Extension_ping_args(Extension_ping_args&&);
   Extension_ping_args& operator=(const Extension_ping_args&);
   Extension_ping_args& operator=(Extension_ping_args&&);
-  Extension_ping_args() {
-  }
+  Extension_ping_args() {}
 
   virtual ~Extension_ping_args() noexcept;
 
-  bool operator == (const Extension_ping_args & /* rhs */) const
-  {
+  bool operator==(const Extension_ping_args& /* rhs */) const {
     return true;
   }
-  bool operator != (const Extension_ping_args &rhs) const {
+  bool operator!=(const Extension_ping_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_ping_args & ) const;
+  bool operator<(const Extension_ping_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class Extension_ping_pargs {
  public:
   virtual ~Extension_ping_pargs() noexcept;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _Extension_ping_result__isset {
   _Extension_ping_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _Extension_ping_result__isset;
 
 class Extension_ping_result {
  public:
-
   Extension_ping_result(const Extension_ping_result&);
   Extension_ping_result(Extension_ping_result&&);
   Extension_ping_result& operator=(const Extension_ping_result&);
   Extension_ping_result& operator=(Extension_ping_result&&);
-  Extension_ping_result() {
-  }
+  Extension_ping_result() {}
 
   virtual ~Extension_ping_result() noexcept;
   ExtensionStatus success;
@@ -125,26 +124,24 @@ class Extension_ping_result {
 
   void __set_success(const ExtensionStatus& val);
 
-  bool operator == (const Extension_ping_result & rhs) const
-  {
+  bool operator==(const Extension_ping_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const Extension_ping_result &rhs) const {
+  bool operator!=(const Extension_ping_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_ping_result & ) const;
+  bool operator<(const Extension_ping_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _Extension_ping_presult__isset {
   _Extension_ping_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _Extension_ping_presult__isset;
 
 class Extension_ping_presult {
@@ -155,25 +152,23 @@ class Extension_ping_presult {
   _Extension_ping_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 typedef struct _Extension_call_args__isset {
-  _Extension_call_args__isset() : registry(false), item(false), request(false) {}
-  bool registry :1;
-  bool item :1;
-  bool request :1;
+  _Extension_call_args__isset()
+      : registry(false), item(false), request(false) {}
+  bool registry : 1;
+  bool item : 1;
+  bool request : 1;
 } _Extension_call_args__isset;
 
 class Extension_call_args {
  public:
-
   Extension_call_args(const Extension_call_args&);
   Extension_call_args(Extension_call_args&&);
   Extension_call_args& operator=(const Extension_call_args&);
   Extension_call_args& operator=(Extension_call_args&&);
-  Extension_call_args() : registry(), item() {
-  }
+  Extension_call_args() : registry(), item() {}
 
   virtual ~Extension_call_args() noexcept;
   std::string registry;
@@ -188,8 +183,7 @@ class Extension_call_args {
 
   void __set_request(const ExtensionPluginRequest& val);
 
-  bool operator == (const Extension_call_args & rhs) const
-  {
+  bool operator==(const Extension_call_args& rhs) const {
     if (!(registry == rhs.registry))
       return false;
     if (!(item == rhs.item))
@@ -198,17 +192,15 @@ class Extension_call_args {
       return false;
     return true;
   }
-  bool operator != (const Extension_call_args &rhs) const {
+  bool operator!=(const Extension_call_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_call_args & ) const;
+  bool operator<(const Extension_call_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class Extension_call_pargs {
  public:
@@ -218,23 +210,20 @@ class Extension_call_pargs {
   const ExtensionPluginRequest* request;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _Extension_call_result__isset {
   _Extension_call_result__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _Extension_call_result__isset;
 
 class Extension_call_result {
  public:
-
   Extension_call_result(const Extension_call_result&);
   Extension_call_result(Extension_call_result&&);
   Extension_call_result& operator=(const Extension_call_result&);
   Extension_call_result& operator=(Extension_call_result&&);
-  Extension_call_result() {
-  }
+  Extension_call_result() {}
 
   virtual ~Extension_call_result() noexcept;
   ExtensionResponse success;
@@ -243,26 +232,24 @@ class Extension_call_result {
 
   void __set_success(const ExtensionResponse& val);
 
-  bool operator == (const Extension_call_result & rhs) const
-  {
+  bool operator==(const Extension_call_result& rhs) const {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const Extension_call_result &rhs) const {
+  bool operator!=(const Extension_call_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_call_result & ) const;
+  bool operator<(const Extension_call_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
 
 typedef struct _Extension_call_presult__isset {
   _Extension_call_presult__isset() : success(false) {}
-  bool success :1;
+  bool success : 1;
 } _Extension_call_presult__isset;
 
 class Extension_call_presult {
@@ -273,81 +260,66 @@ class Extension_call_presult {
   _Extension_call_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
-
 
 class Extension_shutdown_args {
  public:
-
   Extension_shutdown_args(const Extension_shutdown_args&);
   Extension_shutdown_args(Extension_shutdown_args&&);
   Extension_shutdown_args& operator=(const Extension_shutdown_args&);
   Extension_shutdown_args& operator=(Extension_shutdown_args&&);
-  Extension_shutdown_args() {
-  }
+  Extension_shutdown_args() {}
 
   virtual ~Extension_shutdown_args() noexcept;
 
-  bool operator == (const Extension_shutdown_args & /* rhs */) const
-  {
+  bool operator==(const Extension_shutdown_args& /* rhs */) const {
     return true;
   }
-  bool operator != (const Extension_shutdown_args &rhs) const {
+  bool operator!=(const Extension_shutdown_args& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_shutdown_args & ) const;
+  bool operator<(const Extension_shutdown_args&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class Extension_shutdown_pargs {
  public:
   virtual ~Extension_shutdown_pargs() noexcept;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class Extension_shutdown_result {
  public:
-
   Extension_shutdown_result(const Extension_shutdown_result&);
   Extension_shutdown_result(Extension_shutdown_result&&);
   Extension_shutdown_result& operator=(const Extension_shutdown_result&);
   Extension_shutdown_result& operator=(Extension_shutdown_result&&);
-  Extension_shutdown_result() {
-  }
+  Extension_shutdown_result() {}
 
   virtual ~Extension_shutdown_result() noexcept;
 
-  bool operator == (const Extension_shutdown_result & /* rhs */) const
-  {
+  bool operator==(const Extension_shutdown_result& /* rhs */) const {
     return true;
   }
-  bool operator != (const Extension_shutdown_result &rhs) const {
+  bool operator!=(const Extension_shutdown_result& rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const Extension_shutdown_result & ) const;
+  bool operator<(const Extension_shutdown_result&) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
 };
-
 
 class Extension_shutdown_presult {
  public:
   virtual ~Extension_shutdown_presult() noexcept;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
 };
 
 class ExtensionClient : virtual public ExtensionIf {
@@ -358,7 +330,7 @@ class ExtensionClient : virtual public ExtensionIf {
   ExtensionClient(
       std::shared_ptr<::apache::thrift::protocol::TProtocol> iprot,
       std::shared_ptr<::apache::thrift::protocol::TProtocol> oprot) {
-    setProtocol(iprot,oprot);
+    setProtocol(iprot, oprot);
   }
 
  private:
@@ -369,8 +341,8 @@ class ExtensionClient : virtual public ExtensionIf {
   void setProtocol(
       std::shared_ptr<::apache::thrift::protocol::TProtocol> iprot,
       std::shared_ptr<::apache::thrift::protocol::TProtocol> oprot) {
-    piprot_=iprot;
-    poprot_=oprot;
+    piprot_ = iprot;
+    poprot_ = oprot;
     iprot_ = iprot.get();
     oprot_ = oprot.get();
   }
@@ -385,12 +357,18 @@ class ExtensionClient : virtual public ExtensionIf {
   void ping(ExtensionStatus& _return);
   void send_ping();
   void recv_ping(ExtensionStatus& _return);
-  void call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request);
-  void send_call(const std::string& registry, const std::string& item, const ExtensionPluginRequest& request);
+  void call(ExtensionResponse& _return,
+            const std::string& registry,
+            const std::string& item,
+            const ExtensionPluginRequest& request);
+  void send_call(const std::string& registry,
+                 const std::string& item,
+                 const ExtensionPluginRequest& request);
   void recv_call(ExtensionResponse& _return);
   void shutdown();
   void send_shutdown();
   void recv_shutdown();
+
  protected:
   std::shared_ptr<::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr<::apache::thrift::protocol::TProtocol> poprot_;
@@ -401,14 +379,33 @@ class ExtensionClient : virtual public ExtensionIf {
 class ExtensionProcessor : public ::apache::thrift::TDispatchProcessor {
  protected:
   ::std::shared_ptr<ExtensionIf> iface_;
-  virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext);
+  virtual bool dispatchCall(::apache::thrift::protocol::TProtocol* iprot,
+                            ::apache::thrift::protocol::TProtocol* oprot,
+                            const std::string& fname,
+                            int32_t seqid,
+                            void* callContext);
+
  private:
-  typedef  void (ExtensionProcessor::*ProcessFunction)(int32_t, ::apache::thrift::protocol::TProtocol*, ::apache::thrift::protocol::TProtocol*, void*);
+  typedef void (ExtensionProcessor::*ProcessFunction)(
+      int32_t,
+      ::apache::thrift::protocol::TProtocol*,
+      ::apache::thrift::protocol::TProtocol*,
+      void*);
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
-  void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_call(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_shutdown(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_ping(int32_t seqid,
+                    ::apache::thrift::protocol::TProtocol* iprot,
+                    ::apache::thrift::protocol::TProtocol* oprot,
+                    void* callContext);
+  void process_call(int32_t seqid,
+                    ::apache::thrift::protocol::TProtocol* iprot,
+                    ::apache::thrift::protocol::TProtocol* oprot,
+                    void* callContext);
+  void process_shutdown(int32_t seqid,
+                        ::apache::thrift::protocol::TProtocol* iprot,
+                        ::apache::thrift::protocol::TProtocol* oprot,
+                        void* callContext);
+
  public:
   ExtensionProcessor(::std::shared_ptr<ExtensionIf> iface) : iface_(iface) {
     processMap_["ping"] = &ExtensionProcessor::process_ping;
@@ -437,6 +434,7 @@ class ExtensionMultiface : virtual public ExtensionIf {
   ExtensionMultiface(std::vector<std::shared_ptr<ExtensionIf>>& ifaces)
       : ifaces_(ifaces) {}
   virtual ~ExtensionMultiface() {}
+
  protected:
   std::vector<std::shared_ptr<ExtensionIf>> ifaces_;
   ExtensionMultiface() {}
@@ -455,7 +453,10 @@ class ExtensionMultiface : virtual public ExtensionIf {
     return;
   }
 
-  void call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request) {
+  void call(ExtensionResponse& _return,
+            const std::string& registry,
+            const std::string& item,
+            const ExtensionPluginRequest& request) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
@@ -473,7 +474,6 @@ class ExtensionMultiface : virtual public ExtensionIf {
     }
     ifaces_[i]->shutdown();
   }
-
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -492,7 +492,7 @@ class ExtensionConcurrentClient : virtual public ExtensionIf {
       std::shared_ptr<::apache::thrift::protocol::TProtocol> oprot,
       std::shared_ptr<::apache::thrift::async::TConcurrentClientSyncInfo> sync)
       : sync_(sync) {
-    setProtocol(iprot,oprot);
+    setProtocol(iprot, oprot);
   }
 
  private:
@@ -503,8 +503,8 @@ class ExtensionConcurrentClient : virtual public ExtensionIf {
   void setProtocol(
       std::shared_ptr<::apache::thrift::protocol::TProtocol> iprot,
       std::shared_ptr<::apache::thrift::protocol::TProtocol> oprot) {
-    piprot_=iprot;
-    poprot_=oprot;
+    piprot_ = iprot;
+    poprot_ = oprot;
     iprot_ = iprot.get();
     oprot_ = oprot.get();
   }
@@ -519,12 +519,18 @@ class ExtensionConcurrentClient : virtual public ExtensionIf {
   void ping(ExtensionStatus& _return);
   int32_t send_ping();
   void recv_ping(ExtensionStatus& _return, const int32_t seqid);
-  void call(ExtensionResponse& _return, const std::string& registry, const std::string& item, const ExtensionPluginRequest& request);
-  int32_t send_call(const std::string& registry, const std::string& item, const ExtensionPluginRequest& request);
+  void call(ExtensionResponse& _return,
+            const std::string& registry,
+            const std::string& item,
+            const ExtensionPluginRequest& request);
+  int32_t send_call(const std::string& registry,
+                    const std::string& item,
+                    const ExtensionPluginRequest& request);
   void recv_call(ExtensionResponse& _return, const int32_t seqid);
   void shutdown();
   int32_t send_shutdown();
   void recv_shutdown(const int32_t seqid);
+
  protected:
   std::shared_ptr<::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr<::apache::thrift::protocol::TProtocol> poprot_;
@@ -534,9 +540,10 @@ class ExtensionConcurrentClient : virtual public ExtensionIf {
 };
 
 #ifdef _MSC_VER
-  #pragma warning( pop )
+#pragma warning(pop)
 #endif
 
-}} // namespace
+} // namespace extensions
+} // namespace osquery
 
 #endif

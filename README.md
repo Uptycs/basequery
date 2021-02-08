@@ -1,139 +1,50 @@
-# osquery
+# basequery
 
-<p align="center">
-<img alt="osquery logo" width="200"
-src="https://github.com/osquery/osquery/raw/master/docs/img/logo-2x-dark.png" />
-</p>
+basequery is a trimmed down version of [Osquery](https://osquery.io). Checkout Osquery [README](https://github.com/osquery/osquery/blob/master/README.md) first.
 
-<p align="center">
-osquery is a SQL powered operating system instrumentation, monitoring, and analytics framework.
-<br>
-Available for Linux, macOS, Windows, and FreeBSD.
-</p>
+## Differences?
 
-## Information and resources
+[kubequery](https://github.com/Uptycs/kubequery/), [cloudquery](https://github.com/Uptycs/cloudquery/), etc are Osquery extensions. When developing these, there were some shortcomings with Osquery extension model. Also, a lot of the [tables](https://osquery.io/schema/) in Osquery are not relevant to these tools.
 
-- Homepage: [osquery.io](https://osquery.io)
-- Downloads: [osquery.io/downloads](https://osquery.io/downloads)
-- Documentation: [ReadTheDocs](https://osquery.readthedocs.org)
-- Stack Overflow: [Stack Overflow questions](https://stackoverflow.com/questions/tagged/osquery)
-- Table Schema: [osquery.io/schema](https://osquery.io/schema)
-- Query Packs: [osquery.io/packs](https://github.com/osquery/osquery/tree/master/packs)
-- Slack: [Request an auto-invite!](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw)
-- Build Status: [![GitHub Actions Build Status](https://github.com/osquery/osquery/workflows/build/badge.svg)](https://github.com/osquery/osquery/actions?query=workflow%3Abuild+branch%3Amaster) [![Coverity Scan Build Status](https://scan.coverity.com/projects/13317/badge.svg)](https://scan.coverity.com/projects/osquery) [![Documentation Status](https://readthedocs.org/projects/osquery/badge/?version=latest)](https://osquery.readthedocs.io/en/latest/?badge=latest)
-- CII Best Practices: [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3125/badge)](https://bestpractices.coreinfrastructure.org/projects/3125)
+So basequery is forked off of Osquery to create a light weight version. Some feature gaps in extension support are also implemented in basequery.
 
-## What is osquery?
+* Removed most of the tables, carving, ATC with the exception of the following:
+  * osquery_events
+  * osquery_extensions
+  * osquery_flags
+  * osquery_info
+  * osquery_packs
+  * osquery_registry
+  * osquery_schedule
+  * time
+  * processes (not required in basequery but internally used by watcher)
+* Removed dependencies on third-party libraries that are no longer needed
+* Enroll plugin contents are customizable
+* Extensions can have their own flags
+* Extensions can create evented tables and stream event data
 
-osquery exposes an operating system as a high-performance relational database.  This allows you to
-write SQL-based queries to explore operating system data.  With osquery, SQL tables represent
-abstract concepts such as running processes, loaded kernel modules, open network connections,
-browser plugins, hardware events or file hashes.
+### Enroll contents
 
-SQL tables are implemented via a simple plugin and extensions API. A variety of tables already exist
-and more are being written: [https://osquery.io/schema](https://osquery.io/schema/). To best
-understand the expressiveness that is afforded to you by osquery, consider the following SQL
-queries:
+Osquery sends the contents of the following tables as a part of the enroll request:
+* os_version
+* osquery_info
+* system_info
+* platform_info
 
-List the [`users`](https://osquery.io/schema/current#users):
+basequery, by default will only send `osquery_info` table data. This can be changed using `--enroll_tables` flag. For example: `--enroll_tables=osquery_info,kubernetes_info` will send `osquery_info` and `kubernetes_info` data during enrollment process.
 
-```sql
-SELECT * FROM users;
-```
+### Extension flags
 
-Check the [`processes`](https://osquery.io/schema/current#processes) that have a deleted executable:
+Osquery does not allow undefined flags. If one is passed on command line or via flags file, Osquery will refuse to start. In basequery new flag `--extensions_flags` can be used to define extension specific flags.
 
-```sql
-SELECT * FROM processes WHERE on_disk = 0;
-```
+For example: `--extensions_flags=kubequery_flag1,kubequery_flag2` will allow basequery to parse `--kubequery_flag1` and `--kubequery_flag2` flags. Extensions can use `options()` to retrive the flag values. By default all extension flags are defined as `string`.
 
-Get the process name, port, and PID, for processes listening on all interfaces:
+### Extension event tables
 
-```sql
-SELECT DISTINCT processes.name, listening_ports.port, processes.pid
-  FROM listening_ports JOIN processes USING (pid)
-  WHERE listening_ports.address = '0.0.0.0';
-```
+Event'ed table can be implemented in extension just like any regular table.
 
-Find every macOS LaunchDaemon that launches an executable and keeps it running:
-
-```sql
-SELECT name, program || program_arguments AS executable
-  FROM launchd
-  WHERE (run_at_load = 1 AND keep_alive = 1)
-  AND (program != '' OR program_arguments != '');
-```
-
-Check for ARP anomalies from the host's perspective:
-
-```sql
-SELECT address, mac, COUNT(mac) AS mac_count
-  FROM arp_cache GROUP BY mac
-  HAVING count(mac) > 1;
-```
-
-Alternatively, you could also use a SQL sub-query to accomplish the same result:
-
-```sql
-SELECT address, mac, mac_count
-  FROM
-    (SELECT address, mac, COUNT(mac) AS mac_count FROM arp_cache GROUP BY mac)
-  WHERE mac_count > 1;
-```
-
-These queries can be:
-
-- performed on an ad-hoc basis to explore operating system state using the
-  [osqueryi](https://osquery.readthedocs.org/en/latest/introduction/using-osqueryi/) shell
-- executed via a [scheduler](https://osquery.readthedocs.org/en/latest/introduction/using-osqueryd/)
-  to monitor operating system state across a set of hosts
-- launched from custom applications using osquery Thrift APIs
-
-## Download & Install
-
-To download the latest stable builds and for repository information
-and installation instructions visit
-[https://osquery.io/downloads](https://osquery.io/downloads/).
-
-We use a simple numbered versioning scheme `X.Y.Z`, where X is a major version, Y is a minor, and Z is a patch.
-We plan minor releases roughly every two months. These releases are tracked on our [Milestones](https://github.com/osquery/osquery/milestones) page. A patch release is used when there are unforeseen bugs with our minor release and we need to quickly patch.
-A rare 'revision' release might be used if we need to change build configurations.
-
-Major, minor, and patch releases are tagged on GitHub and can be viewed on the [Releases](https://github.com/osquery/osquery/releases) page.
-We open a new [Release Checklist](https://github.com/osquery/osquery/blob/master/.github/ISSUE_TEMPLATE/New_Release.md) issue when we prepare a minor release. If you are interested in the status of a release, please find the corresponding checklist issue, and note that the issue will be marked closed when we are finished the checklist.
-We consider a release 'in testing' during the period of hosting new downloads on our website and adding them to our hosted repositories.
-We will mark the release as 'stable' on GitHub when enough testing has occurred, this usually takes two weeks.
-
-## Build from source
-
-Building osquery from source is encouraged! Check out our [build
-guide](https://osquery.readthedocs.io/en/latest/development/building/). Also
-check out our [contributing guide](CONTRIBUTING.md) and join the
-community on [Slack](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw).
-
-## License
-
-By contributing to osquery you agree that your contributions will be
-licensed as defined on the LICENSE file.
-
-## Vulnerabilities
-
-We keep track of security announcements in our tagged version release
-notes on GitHub. We aggregate these into [SECURITY.md](SECURITY.md)
-too.
-
-## Learn more
-
-The osquery documentation is available
-[online](https://osquery.readthedocs.org). Documentation for older
-releases can be found by version number, [as
-well](https://readthedocs.org/projects/osquery/).
-
-If you're interested in learning more about osquery read the [launch
-blog
-post](https://code.facebook.com/posts/844436395567983/introducing-osquery/)
-for background on the project, visit the [users
-guide](https://osquery.readthedocs.org/).
-
-Development and usage discussion is happening in the osquery Slack, grab an invite
-[here](https://join.slack.com/t/osquery/shared_invite/zt-h29zm0gk-s2DBtGUTW4CFel0f0IjTEw)!
+* Name of the table should end with `_events`
+* Comma separated list of event tables should be passed to basequery using `--extension_event_tables` flag. For example: `--extension_event_tables=kubernetes_events,pod_events`. This flag enables basequery to start the publisher thread for each extension events table
+* `generate` method will never be called in extension events table
+* Table implementation should call `streamEvents` whenever it has data available
+* If there is a timestamp available for the event, it should be defined in a column called `time`. It should hold the time of the event as big integer

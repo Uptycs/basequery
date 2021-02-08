@@ -23,6 +23,7 @@
 
 #include <osquery/utils/conversions/split.h>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace osquery {
@@ -312,9 +313,6 @@ static inline void openOptimized(sqlite3*& db) {
 #if !defined(FREEBSD)
   registerStringExtensions(db);
 #endif
-#if !defined(SKIP_CARVER)
-  registerOperationExtensions(db);
-#endif
   registerFilesystemExtensions(db);
   registerHashingExtensions(db);
   registerEncodingExtensions(db);
@@ -365,6 +363,9 @@ TableAttributes SQLiteDBInstance::getAttributes() const {
 
   TableAttributes attributes = TableAttributes::NONE;
   for (const auto& table : rdbc->affected_tables_) {
+    if (boost::algorithm::ends_with(table.second->name, "_events")) {
+      attributes = TableAttributes::EVENT_BASED | attributes;
+    }
     attributes = table.second->attributes | attributes;
   }
   return attributes;

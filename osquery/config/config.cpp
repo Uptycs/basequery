@@ -29,6 +29,8 @@
 #include <osquery/database/database.h>
 #include <osquery/dispatcher/dispatcher.h>
 #include <osquery/events/eventfactory.h>
+#include <osquery/events/events.h>
+#include <osquery/extensions/extensions.h>
 #include <osquery/hashing/hashing.h>
 #include <osquery/logger/logger.h>
 #include <osquery/registry/registry.h>
@@ -893,6 +895,25 @@ Status Config::update(const ConfigMap& config) {
 
       if (plugin) {
         plugin->configure();
+      }
+    }
+
+    // Notify external config plugins about the new configuration
+    PluginRequest configRefresh = {{"action", "refresh"}};
+    for (const auto& source : config) {
+      configRefresh.insert(source);
+    }
+
+    PluginResponse resp;
+    for (const auto& extension :
+         RegistryFactory::get().registry("config")->getExternal()) {
+      LOG(INFO) << "Calling config refresh on external plugin: "
+                << extension.first;
+      auto status = callExtension(
+          extension.second, "config", extension.first, configRefresh, resp);
+      if (!status.ok()) {
+        LOG(WARNING) << "Failed to refresh external config plugin "
+                     << extension.first << ": " << status.getMessage();
       }
     }
   }

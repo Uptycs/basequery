@@ -4,15 +4,15 @@
 #include "ExtensionManager.h"
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/transport/TServerSocket.h>
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
-using namespace  ::osquery::extensions;
+using namespace ::osquery::extensions;
 
 class ExtensionManagerHandler : virtual public ExtensionManagerIf {
  public:
@@ -30,12 +30,15 @@ class ExtensionManagerHandler : virtual public ExtensionManagerIf {
     printf("options\n");
   }
 
-  void registerExtension(ExtensionStatus& _return, const InternalExtensionInfo& info, const ExtensionRegistry& registry) {
+  void registerExtension(ExtensionStatus& _return,
+                         const InternalExtensionInfo& info,
+                         const ExtensionRegistry& registry) {
     // Your implementation goes here
     printf("registerExtension\n");
   }
 
-  void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid) {
+  void deregisterExtension(ExtensionStatus& _return,
+                           const ExtensionRouteUUID uuid) {
     // Your implementation goes here
     printf("deregisterExtension\n");
   }
@@ -50,9 +53,20 @@ class ExtensionManagerHandler : virtual public ExtensionManagerIf {
     printf("getQueryColumns\n");
   }
 
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& events) {
+    // Your implementation goes here
+    printf("streamEvents\n");
+  }
+
+  void getNodeKey(std::string& _return) {
+    // Your implementation goes here
+    printf("getNodeKey\n");
+  }
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   int port = 9090;
   ::std::shared_ptr<ExtensionManagerHandler> handler(
       new ExtensionManagerHandler());
@@ -64,8 +78,8 @@ int main(int argc, char **argv) {
   ::std::shared_ptr<TProtocolFactory> protocolFactory(
       new TBinaryProtocolFactory());
 
-  TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+  TSimpleServer server(
+      processor, serverTransport, transportFactory, protocolFactory);
   server.serve();
   return 0;
 }
-

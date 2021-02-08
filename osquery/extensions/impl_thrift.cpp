@@ -138,6 +138,14 @@ class ExtensionManagerHandler : virtual public extensions::ExtensionManagerIf,
   using ExtensionManagerInterface::options;
   void options(extensions::InternalOptionList& _return) override;
 
+  using ExtensionManagerInterface::streamEvents;
+  void streamEvents(extensions::ExtensionStatus& _return,
+                    const std::string& name,
+                    const PluginResponse& events) override;
+
+  using ExtensionManagerInterface::getNodeKey;
+  void getNodeKey(std::string& _return) override;
+
   using ExtensionManagerInterface::registerExtension;
   void registerExtension(
       extensions::ExtensionStatus& _return,
@@ -238,6 +246,22 @@ void ExtensionManagerHandler::options(extensions::InternalOptionList& _return) {
     _return[option.first].default_value = option.second.default_value;
     _return[option.first].type = option.second.type;
   }
+}
+
+void ExtensionManagerHandler::streamEvents(extensions::ExtensionStatus& _return,
+                                           const std::string& name,
+                                           const PluginResponse& events) {
+  auto status = ExtensionManagerInterface::streamEvents(name, events);
+  _return.message = status.getMessage();
+  if (status.ok()) {
+    _return.code = (int)extensions::ExtensionCode::EXT_SUCCESS;
+  } else {
+    _return.code = (int)extensions::ExtensionCode::EXT_FAILED;
+  }
+}
+
+void ExtensionManagerHandler::getNodeKey(std::string& _return) {
+  _return = ExtensionManagerInterface::getNodeKey();
 }
 
 void ExtensionManagerHandler::registerExtension(
@@ -495,6 +519,19 @@ OptionList ExtensionManagerClient::options() {
     ol[option.first] = {opt.value, opt.default_value, opt.type};
   }
   return ol;
+}
+
+Status ExtensionManagerClient::streamEvents(const std::string& name,
+                                            const PluginResponse& events) {
+  extensions::ExtensionStatus status;
+  client_->em->streamEvents(status, name, events);
+  return Status(status.code, status.message);
+}
+
+std::string ExtensionManagerClient::getNodeKey() {
+  std::string nodeKey;
+  client_->em->getNodeKey(nodeKey);
+  return nodeKey;
 }
 
 Status ExtensionManagerClient::registerExtension(

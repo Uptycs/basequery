@@ -157,7 +157,7 @@ class OsqueryException(Exception):
 
 class OsqueryWrapper(REPLWrapper):
     '''A pexpect wrapper intended for interacting with the osqueryi REPL'''
-    PROMPT = u'osquery> '
+    PROMPT = u'query> '
     CONTINUATION_PROMPT = u'    ...> '
     ERROR_PREFIX = u'Error:'
 

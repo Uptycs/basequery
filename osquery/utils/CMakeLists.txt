@@ -6,10 +6,7 @@
 # SPDX-License-Identifier: (Apache-2.0 OR GPL-2.0-only)
 
 function(osqueryUtilsMain)
-  if(OSQUERY_BUILD_AWS)
-    add_subdirectory("aws")
-  endif()
-  add_subdirectory("azure")
+  add_subdirectory("aws")
   add_subdirectory("caches")
   add_subdirectory("system")
   add_subdirectory("status")

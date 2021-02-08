@@ -7,8 +7,6 @@
 
 function(osqueryUtilsSystemMain)
 
-  add_subdirectory("linux")
-
   if(OSQUERY_BUILD_TESTS)
     generateOsqueryUtilsSystemErrnoErrnotestsTest()
     generateOsqueryUtilsSystemCpuCputopologytestsTest()
@@ -18,7 +16,6 @@ function(osqueryUtilsSystemMain)
   generateOsqueryUtilsSystemEnv()
   generateOsqueryUtilsSystemFilepath()
   generateOsqueryUtilsSystemErrno()
-  generateOsqueryUtilsSystemCputopology()
   generateOsqueryUtilsSystemTime()
   generateOsqueryUtilsSystem()
   generateOsqueryUtilsSystemUptime()
@@ -113,33 +110,6 @@ function(generateOsqueryUtilsSystemErrno)
   generateIncludeNamespace(osquery_utils_system_errno "osquery/utils/system" "FULL_PATH" ${public_header_files})
 
   add_test(NAME osquery_utils_system_errno_errnotests-test COMMAND osquery_utils_system_errno_errnotests-test)
-
-endfunction()
-
-function(generateOsqueryUtilsSystemCputopology)
-  if(DEFINED PLATFORM_LINUX)
-    add_osquery_library(osquery_utils_system_cputopology EXCLUDE_FROM_ALL
-      linux/cpu.cpp
-    )
-
-    target_link_libraries(osquery_utils_system_cputopology PUBLIC
-      osquery_cxx_settings
-      osquery_utils_conversions
-      osquery_utils_expected
-      thirdparty_boost
-    )
-
-    set(public_header_files
-      linux/cpu.h
-    )
-
-    generateIncludeNamespace(osquery_utils_system_cputopology "osquery/utils/system" "FULL_PATH" ${public_header_files})
-
-    add_test(NAME osquery_utils_system_cputopologytests-test COMMAND osquery_utils_system_cputopologytests-test)
-
-  else()
-    add_osquery_library(osquery_utils_system_cputopology INTERFACE)
-  endif()
 
 endfunction()
 
@@ -264,15 +234,10 @@ function(generateOsqueryUtilsSystemCpuCputopologytestsTest)
     tests/cpu.cpp
   )
 
-  if(DEFINED PLATFORM_LINUX)
-    list(APPEND source_files linux/tests/cpu.cpp)
-  endif()
-
   add_osquery_executable(osquery_utils_system_cputopologytests-test ${source_files})
 
   target_link_libraries(osquery_utils_system_cputopologytests-test PRIVATE
     osquery_cxx_settings
-    osquery_utils_system_cputopology
     thirdparty_googletest
   )
 endfunction()

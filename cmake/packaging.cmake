@@ -137,8 +137,6 @@ function(findPackagingTool)
 endfunction()
 
 function(generateInstallTargets)
-  get_property(augeas_lenses_path GLOBAL PROPERTY AUGEAS_LENSES_FOLDER_PATH)
-
   if(DEFINED PLATFORM_LINUX)
     # .
     file(COPY "${CMAKE_SOURCE_DIR}/tools/deployment/linux_postinstall.sh" DESTINATION "${CMAKE_BINARY_DIR}/package/linux")
@@ -170,13 +168,6 @@ function(generateInstallTargets)
     # share
     file(COPY "${CMAKE_SOURCE_DIR}/tools/deployment/osquery.example.conf" DESTINATION "${CMAKE_BINARY_DIR}/package/linux")
     install(FILES "${CMAKE_BINARY_DIR}/package/linux/osquery.example.conf" DESTINATION share/osquery COMPONENT osquery)
-
-    install(DIRECTORY "${augeas_lenses_path}/"
-            DESTINATION share/osquery/lenses
-            COMPONENT osquery
-            FILES_MATCHING PATTERN "*.aug"
-            PATTERN "tests" EXCLUDE)
-    install(FILES "${augeas_lenses_path}/../COPYING" DESTINATION share/osquery/lenses COMPONENT osquery)
 
     if("${PACKAGING_SYSTEM}" STREQUAL "DEB")
       file(COPY "${CMAKE_SOURCE_DIR}/tools/deployment/copyright.debian" DESTINATION "${CMAKE_BINARY_DIR}/package/deb")
@@ -271,11 +262,6 @@ function(generateInstallTargets)
     install(DIRECTORY COMPONENT osquery DESTINATION /private/var/log/osquery)
     install(DIRECTORY COMPONENT osquery DESTINATION /private/var/osquery)
 
-    install(DIRECTORY "${augeas_lenses_path}" COMPONENT osquery
-            DESTINATION /private/var/osquery/lenses
-            FILES_MATCHING PATTERN "*.aug"
-            PATTERN "tests" EXCLUDE)
-
     file(COPY "${CMAKE_SOURCE_DIR}/packs" DESTINATION "${CMAKE_BINARY_DIR}/package/pkg")
     install(DIRECTORY "${CMAKE_BINARY_DIR}/package/pkg/packs" COMPONENT osquery DESTINATION /private/var/osquery)
 
@@ -309,11 +295,11 @@ function(generatePackageTarget)
 
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "osquery is an operating system instrumentation toolchain.")
   set(CPACK_COMPONENT_OSQUERY_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION_SUMMARY})
-  set(CPACK_PACKAGE_NAME "osquery")
+  set(CPACK_PACKAGE_NAME "basequery")
   set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-  set(CPACK_PACKAGE_VENDOR "osquery")
-  set(CPACK_PACKAGE_CONTACT "osquery@osquery.io")
-  set(CPACK_PACKAGE_HOMEPAGE_URL "https://osquery.io")
+  set(CPACK_PACKAGE_VENDOR "basequery")
+  set(CPACK_PACKAGE_CONTACT "basequery@uptycs.com")
+  set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/Uptycs/basequery")
   set(CPACK_PROJECT_CONFIG_FILE "${CMAKE_BINARY_DIR}/package/CPackConfig.cmake")
   set(CPACK_PACKAGE_RELOCATABLE ON)
   set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/package/LICENSE.txt")

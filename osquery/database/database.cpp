@@ -43,7 +43,6 @@ const std::string kInternalDatabase = "rocksdb";
 const std::string kPersistentSettings = "configurations";
 const std::string kQueries = "queries";
 const std::string kEvents = "events";
-const std::string kCarves = "carves";
 const std::string kLogs = "logs";
 
 const std::string kDbEpochSuffix = "epoch";
@@ -52,7 +51,7 @@ const std::string kDbCounterSuffix = "counter";
 const std::string kDbVersionKey = "results_version";
 
 const std::vector<std::string> kDomains = {
-    kPersistentSettings, kQueries, kEvents, kLogs, kCarves};
+    kPersistentSettings, kQueries, kEvents, kLogs};
 
 std::atomic<bool> kDBAllowOpen(false);
 std::atomic<bool> kDBInitialized(false);

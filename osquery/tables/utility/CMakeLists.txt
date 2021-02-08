@@ -11,7 +11,6 @@ endfunction()
 
 function(generateTablesUtilityUtilitytable)
   add_osquery_library(osquery_tables_utility_utilitytable EXCLUDE_FROM_ALL
-    file.cpp
     osquery.cpp
     time.cpp
   )

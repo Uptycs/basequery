@@ -10,9 +10,12 @@
 #include <atomic>
 #include <unordered_set>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include <osquery/core/core.h>
 #include <osquery/core/flags.h>
 #include <osquery/core/system.h>
+#include <osquery/events/events.h>
 #include <osquery/logger/logger.h>
 #include <osquery/process/process.h>
 #include <osquery/registry/registry_factory.h>
@@ -21,8 +24,6 @@
 #include <osquery/utils/conversions/tryto.h>
 
 namespace osquery {
-
-FLAG(bool, enable_foreign, false, "Enable no-op foreign virtual tables");
 
 FLAG(uint64,
      table_delay,
@@ -1011,6 +1012,28 @@ static int xFilter(sqlite3_vtab_cursor* pVtabCursor,
       }
       return SQLITE_ERROR;
     }
+  } else if (boost::algorithm::ends_with(pVtab->content->name, "_events") &&
+             Registry::get().exists("table", pVtab->content->name, false)) {
+    try {
+      pCur->uses_generator = true;
+      pCur->generator = std::make_unique<RowGenerator::pull_type>(
+          std::bind(&ExtensionEventTable::generator,
+                    ExtensionEventTable(pVtab->content->name),
+                    std::placeholders::_1,
+                    std::move(context)));
+      if (*pCur->generator) {
+        pCur->current = pCur->generator->get();
+      }
+      return SQLITE_OK;
+    } catch (const std::exception& e) {
+      LOG(ERROR) << "Exception while executing table " << pVtab->content->name
+                 << ": " << e.what();
+      setTableErrorMessage(pVtabCursor->pVtab, e.what());
+      if (FLAGS_table_exceptions) {
+        throw;
+      }
+      return SQLITE_ERROR;
+    }
   } else {
     PluginRequest request = {{"action", "generate"}};
     TablePlugin::setRequestFromContext(context, request);
@@ -1144,13 +1167,6 @@ Status attachFunctionInternal(
 }
 
 void attachVirtualTables(const SQLiteDBInstanceRef& instance) {
-  if (FLAGS_enable_foreign) {
-#if !defined(OSQUERY_EXTERNAL)
-    // Foreign table schema is available for the shell and daemon only.
-    registerForeignTables();
-#endif
-  }
-
   PluginResponse response;
   bool is_extension = false;
 
@@ -1162,6 +1178,15 @@ void attachVirtualTables(const SQLiteDBInstanceRef& instance) {
       auto statement = columnDefinition(response, true, is_extension);
       attachTableInternal(name, statement, instance, is_extension);
     }
+  }
+}
+
+void ExtensionEventTable::generator(RowYield& yield, QueryContext& context) {
+  if (EventFactory::exists(name_)) {
+    auto subscriber = EventFactory::getEventSubscriber(name_);
+    return subscriber->genTable(yield, context);
+  } else {
+    LOG(ERROR) << "Subscriber missing for table: " << name_;
   }
 }
 } // namespace osquery

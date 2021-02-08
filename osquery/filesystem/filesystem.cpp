@@ -485,19 +485,6 @@ Status createDirectory(const boost::filesystem::path& dir_path,
   return Status::failure(msg);
 }
 
-std::set<fs::path> getHomeDirectories() {
-  std::set<fs::path> results;
-
-  auto users = SQL::selectAllFrom("users");
-  for (const auto& user : users) {
-    if (user.at("directory").size() > 0) {
-      results.insert(user.at("directory"));
-    }
-  }
-
-  return results;
-}
-
 bool safePermissions(const fs::path& dir,
                      const fs::path& path,
                      bool executable) {

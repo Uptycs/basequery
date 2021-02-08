@@ -15,6 +15,8 @@
 #include <osquery/core/core.h>
 #include <osquery/core/shutdown.h>
 #include <osquery/core/system.h>
+#include <osquery/events/events.h>
+#include <osquery/events/extension_events.h>
 #include <osquery/filesystem/filesystem.h>
 #include <osquery/logger/logger.h>
 #include <osquery/registry/registry_factory.h>
@@ -78,6 +80,19 @@ OptionList ExtensionManagerInterface::options() {
     options[flag.first].type = flag.second.type;
   }
   return options;
+}
+
+Status ExtensionManagerInterface::streamEvents(const std::string& name,
+                                               const PluginResponse& events) {
+  auto pub = EventFactory::getEventPublisher(name);
+  if (pub == nullptr) {
+    return Status::failure("Event publisher not found for: " + name);
+  }
+
+  auto epub = std::shared_ptr<ExtensionEventPublisher>(
+      pub, reinterpret_cast<ExtensionEventPublisher*>(pub.get()));
+
+  return epub->add(events);
 }
 
 Status ExtensionManagerInterface::registerExtension(

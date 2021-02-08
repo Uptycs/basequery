@@ -43,6 +43,7 @@
 #include <osquery/process/process.h>
 #include <osquery/registry/registry.h>
 #include <osquery/utils/config/default_paths.h>
+#include <osquery/utils/conversions/split.h>
 #include <osquery/utils/info/platform_type.h>
 #include <osquery/utils/info/version.h>
 #include <osquery/utils/system/system.h>
@@ -111,6 +112,10 @@ CLI_FLAG(bool, S, false, "Run as a shell process");
 CLI_FLAG(bool, D, false, "Run as a daemon process");
 CLI_FLAG(bool, daemonize, false, "Attempt to daemonize (POSIX only)");
 CLI_FLAG(uint64, alarm_timeout, 4, "Seconds to wait for a graceful shutdown");
+CLI_FLAG(string,
+         extensions_flags,
+         "",
+         "Comma-separated list of extension flags. Example: flag1,flag2");
 
 FLAG(bool, ephemeral, false, "Skip pidfile and database state checks");
 
@@ -288,7 +293,18 @@ Initializer::Initializer(int& argc,
   GFLAGS_NAMESPACE::SetVersionString(kVersion.c_str());
 
   // Let gflags parse the non-help options/flags.
+  GFLAGS_NAMESPACE::AllowCommandLineReparsing();
   GFLAGS_NAMESPACE::ParseCommandLineFlags(argc_, argv_, isShell());
+
+  // Create extension flags
+  for (const auto& flag : osquery::split(FLAGS_extensions_flags, ",")) {
+    GFLAGS_NAMESPACE::FlagRegisterer extFlag(
+        strdup(flag.c_str()), "", "", new fLS::clstring, new fLS::clstring);
+    Flag::create(flag, {"", false, false, false, false});
+  }
+
+  // Reparse flags after extension flags are declared
+  GFLAGS_NAMESPACE::ReparseCommandLineNonHelpFlags();
 
   if (isShell()) {
     // Do not set these values before calling ParseCommandLineFlags.

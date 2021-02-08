@@ -104,7 +104,6 @@ TEST_F(TLSEnrollTests, test_tls_enroll) {
   value = obj["host_identifier"].GetString();
   EXPECT_EQ(value, getHostIdentifier());
 
-  ASSERT_EQ(kEnrollHostDetails.count("osquery_info"), 1U);
   auto osquery_info = SQL::selectAllFrom("osquery_info");
   ASSERT_EQ(osquery_info.size(), 1U);
   ASSERT_EQ(osquery_info[0].count("uuid"), 1U);

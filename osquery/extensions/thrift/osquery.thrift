@@ -101,4 +101,11 @@ service ExtensionManager extends Extension {
   ExtensionResponse getQueryColumns(
     1:string sql,
   ),
+  /// Stream batch of events for a events table.
+  ExtensionStatus streamEvents(
+    /// The name of the events table.
+    1:string name,
+    /// Batch of events for the event table.
+    2:ExtensionPluginResponse events,
+  ),
 }

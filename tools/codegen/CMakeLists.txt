@@ -209,7 +209,6 @@ function(generateTableCategoryAmalgamation category_name)
   set(target_name "codegen_${category_name}_tables")
 
   add_osquery_library("${target_name}" EXCLUDE_FROM_ALL "${amalgamation_file}")
-  target_link_libraries("${target_name}" PUBLIC osquery_events)
 
   # Return the target name to the caller
   set(generateTableCategoryAmalgamation_output "${target_name}" PARENT_SCOPE)

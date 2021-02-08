@@ -31,6 +31,7 @@ function(generateOsqueryCoreInit)
     osquery_cxx_settings
     osquery_config
     osquery_core
+    osquery_logger_datalogger
     osquery_numericmonitoring
     osquery_extensions
     osquery_distributed
@@ -81,6 +82,7 @@ function(generateOsqueryCore)
     osquery_cxx_settings
     osquery_core_plugins
     osquery_core_sql
+    osquery_database
     osquery_filesystem
     osquery_process
     osquery_registry

@@ -15,7 +15,6 @@ endfunction()
 
 function(generatePluginsConfigParsers)
   add_osquery_library(plugins_config_parsers EXCLUDE_FROM_ALL
-    auto_constructed_tables.cpp
     decorators.cpp
     events_parser.cpp
     feature_vectors.cpp
@@ -43,7 +42,6 @@ function(generatePluginsConfigParsers)
   )
 
   set(public_header_files
-    auto_constructed_tables.h
     decorators.h
     feature_vectors.h
     kafka_topics.h

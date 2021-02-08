@@ -24,7 +24,6 @@ function(generateOsquerySdkPluginsdk)
     osquery_database
     osquery_dispatcher
     osquery_events_eventsregistry
-    osquery_experimental_eventsstream_registry
     osquery_extensions
     osquery_logger_datalogger
     osquery_numericmonitoring

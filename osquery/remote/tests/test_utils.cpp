@@ -17,7 +17,6 @@
 #include <osquery/core/flags.h>
 #include <osquery/database/database.h>
 #include <osquery/logger/logger.h>
-#include <osquery/process/process.h>
 #include <osquery/remote/tests/test_utils.h>
 #include <osquery/sql/sql.h>
 #include <osquery/tests/test_util.h>
@@ -33,7 +32,6 @@ DECLARE_string(tls_hostname);
 DECLARE_string(enroll_tls_endpoint);
 DECLARE_string(tls_server_certs);
 DECLARE_string(enroll_secret_path);
-DECLARE_bool(disable_caching);
 
 Status TLSServerRunner::startAndSetScript(const std::string& port,
                                           const std::string& server_cert) {
@@ -62,92 +60,21 @@ Status TLSServerRunner::startAndSetScript(const std::string& port,
   return Status::success();
 }
 
-Status TLSServerRunner::getListeningPortPid(const std::string& port,
-                                            std::string& pid) {
-  // Reset the output.
-  pid.clear();
-
-  std::string q = "select pid from listening_ports where port = '" + port + "'";
-
-  auto caching = FLAGS_disable_caching;
-  FLAGS_disable_caching = true;
-  auto results = SQL(q);
-  FLAGS_disable_caching = caching;
-  if (results.rows().empty()) {
-    return Status::failure("No pid listening on port: " + port);
-  }
-
-  const auto& first_row = results.rows()[0];
-  pid = first_row.at("pid");
-  return Status::success();
-}
-
 bool TLSServerRunner::start(const std::string& server_cert) {
   auto& self = instance();
   if (self.server_ != nullptr) {
     return true;
   }
 
-  // We need to pick a 'random' port.
-  std::srand((unsigned int)getUnixTime());
-
-  bool started = false;
-  const size_t max_retry = 3;
-  size_t retry = 0;
-  while (retry < max_retry) {
-    // Pick a port in an ephemeral range at random.
-    self.port_ = std::to_string(std::rand() % 10000 + 20000);
-
-    {
-      // Check that the port is not used.
-      std::string pid;
-      if (self.getListeningPortPid(self.port_, pid).ok()) {
-        // Another process is listening on this port.
-        continue;
-      }
-    }
-
-    auto status = self.startAndSetScript(self.port_, server_cert);
-    if (!status.ok()) {
-      // This is an unexpected problem, retry without waiting.
-      LOG(WARNING) << status.getMessage();
-      continue;
-    }
-
-    size_t delay = 0;
-    // Expect to wait for the server to listen on the port.
-    while (delay < max_retry * 2 * 1000) {
-      std::string pid;
-      status = self.getListeningPortPid(self.port_, pid);
-      if (!status.ok()) {
-        // No pid listening, we should wait longer.
-        LOG(WARNING) << status.getMessage();
-        sleepFor(100);
-        delay += 100;
-        continue;
-      }
-
-      if (pid == std::to_string(self.server_->pid())) {
-        started = true;
-      } else {
-        // Another process is listening on this pid.
-        LOG(WARNING) << "Another process is listening on port: " << self.port_;
-      }
-      break;
-    }
-
-    if (started) {
-      break;
-    }
-
-    self.stop();
-    sleepFor(1000);
-    ++retry;
-  }
-
-  if (!started) {
+  self.port_ = "46852";
+  auto status = self.startAndSetScript(self.port_, server_cert);
+  if (!status.ok()) {
+    // This is an unexpected problem, retry without waiting.
+    LOG(WARNING) << status.getMessage();
     return false;
   }
+
+  sleepFor(2000);
   return true;
 }
 

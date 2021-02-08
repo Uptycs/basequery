@@ -69,6 +69,8 @@ class ExtensionManagerAPI {
  public:
   virtual ExtensionList extensions() = 0;
   virtual OptionList options() = 0;
+  virtual Status streamEvents(const std::string& name,
+                              const PluginResponse& events) = 0;
   virtual Status registerExtension(const ExtensionInfo& info,
                                    const ExtensionRegistry& registry,
                                    RouteUUID& uuid) = 0;
@@ -134,6 +136,21 @@ class ExtensionManagerInterface : public ExtensionInterface,
    * flag.
    */
   virtual OptionList options() override;
+
+  /**
+   * @brief Called by extension to stream data for events table.
+   *
+   * Event tables have special optimizations in osquery core. If extension
+   * implements a event table, this method can be used to send events as the
+   * extension gets them. extension_event_tables flag should be used to
+   * specify the name of the event tables implemented in extensions.
+   *
+   * @param name Name of the events table.
+   * @param events Events data.
+   * @return Failure is returned if extension_event_tables is not configured.
+   */
+  virtual Status streamEvents(const std::string& name,
+                              const PluginResponse& events) override;
 
   /**
    * @brief Request a Route UUID and advertise a set of Registry routes.
@@ -390,6 +407,10 @@ class ExtensionManagerClient : public ExtensionClient,
 
   /// List all osquery options (gflags).
   OptionList options() override;
+
+  /// Stream events
+  Status streamEvents(const std::string& name,
+                      const PluginResponse& events) override;
 
   /// Regiester yourself as a new extension.
   Status registerExtension(const ExtensionInfo& info,

@@ -22,7 +22,6 @@ function(generatePluginsConfigParsersTestsDecoratorstestsTest)
     osquery_core
     osquery_database
     osquery_dispatcher
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_filesystem
@@ -46,7 +45,6 @@ function(generatePluginsConfigParsersTestsEventsparsertestsTest)
     osquery_core
     osquery_database
     osquery_dispatcher
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_filesystem
@@ -69,7 +67,6 @@ function(generatePluginsConfigParsersTestsFilepathstestsTest)
     osquery_core
     osquery_database
     osquery_dispatcher
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_filesystem
@@ -94,7 +91,6 @@ function(generatePluginsConfigParsersTestsOptionstestsTest)
     osquery_core
     osquery_database
     osquery_dispatcher
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_filesystem
@@ -118,7 +114,6 @@ function(generatePluginsConfigParsersTestsViewstestsTest)
     osquery_core
     osquery_database
     osquery_dispatcher
-    osquery_events
     osquery_extensions
     osquery_extensions_implthrift
     osquery_filesystem

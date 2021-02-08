@@ -69,9 +69,6 @@ function(generatePythonTests)
   # Tests
   addPythonTest(NAME tools_tests_testosqueryd SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/test_osqueryd.py")
   addPythonTest(NAME tools_tests_testosqueryi SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/test_osqueryi.py")
-  if(PLATFORM_LINUX)
-    addPythonTest(NAME tools_tests_testfschangestable SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/test_docker_container_fs_changes_table.py")
-  endif()
 endfunction()
 
 osqueryToolsTestsMain()

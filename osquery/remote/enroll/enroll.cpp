@@ -17,6 +17,7 @@
 #include <osquery/registry/registry_factory.h>
 #include <osquery/remote/enroll/enroll.h>
 #include <osquery/sql/sql.h>
+#include <osquery/utils/conversions/split.h>
 #include <osquery/utils/system/time.h>
 
 namespace osquery {
@@ -45,6 +46,12 @@ CLI_FLAG(string,
          "",
          "Name of environment variable holding enrollment-auth secret");
 
+/// Table data to send as a part of enroll payload.
+CLI_FLAG(string,
+         enroll_tables,
+         "osquery_info",
+         "Comma separated list of tables data to send in enroll request");
+
 /// Allow users to disable reenrollment if a config/logger endpoint fails.
 CLI_FLAG(bool,
          disable_reenrollment,
@@ -59,10 +66,6 @@ CLI_FLAG(bool,
  * provides a helper member for transforming PluginRequests to strings.
  */
 CREATE_LAZY_REGISTRY(EnrollPlugin, "enroll");
-
-const std::set<std::string> kEnrollHostDetails{
-    "os_version", "osquery_info", "system_info", "platform_info",
-};
 
 Status clearNodeKey() {
   return deleteDatabaseValue(kPersistentSettings, "nodeKey");
@@ -109,7 +112,7 @@ const std::string getEnrollSecret() {
 
 void EnrollPlugin::genHostDetails(JSON& host_details) {
   // Select from each table describing host details.
-  for (const auto& table : kEnrollHostDetails) {
+  for (const auto& table : osquery::split(FLAGS_enroll_tables, ",")) {
     auto results = SQL::selectAllFrom(table);
     if (!results.empty()) {
       JSON details;

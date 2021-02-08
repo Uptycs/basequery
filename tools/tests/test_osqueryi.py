@@ -218,24 +218,6 @@ class OsqueryiTest(unittest.TestCase):
         self.assertTrue(0 <= int(row['minutes']) <= 60)
         self.assertTrue(0 <= int(row['seconds']) <= 60)
 
-    # TODO: Running foreign table tests as non-priv user fails
-    @unittest.skipIf(os.name == "nt", "foreign table tests not supported on Windows.")
-    def test_foreign_tables(self):
-        '''Requires the --enable_foreign flag to add at least one table.'''
-        self.osqueryi.run_command(' ')
-
-        query = 'SELECT count(1) c FROM osquery_registry;'
-        result = self.osqueryi.run_query(query)
-        before = int(result[0]['c'])
-
-        osqueryi2 = test_base.OsqueryWrapper(self.binary,
-            args={"enable_foreign": True})
-        osqueryi2.run_command(' ')
-        # This execution fails if the user is not Administrator on Windows
-        result = osqueryi2.run_query(query)
-        after = int(result[0]['c'])
-        self.assertGreater(after, before)
-
     def test_time_using_all(self):
         self.osqueryi.run_command(' ')
         result = self.osqueryi.run_command('.all time')
@@ -246,12 +228,6 @@ class OsqueryiTest(unittest.TestCase):
                                                  args={"config_path": "/"})
         result = self.osqueryi.run_query('SELECT * FROM time;')
         self.assertEqual(len(result), 1)
-
-    def test_atc(self):
-        local_osquery_instance = test_base.OsqueryWrapper(self.binary,
-                                                 args={"config_path": "test.config"})
-        result = local_osquery_instance.run_query('SELECT a_number FROM test_atc')
-        self.assertEqual(result, [{'a_number':'314159'}])
 
 if __name__ == '__main__':
     with test_base.CleanChildProcesses():

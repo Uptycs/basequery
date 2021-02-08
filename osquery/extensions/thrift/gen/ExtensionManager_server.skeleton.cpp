@@ -50,6 +50,12 @@ class ExtensionManagerHandler : virtual public ExtensionManagerIf {
     printf("getQueryColumns\n");
   }
 
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& batch) {
+    // Your implementation goes here
+    printf("streamEvents\n");
+  }
 };
 
 int main(int argc, char **argv) {

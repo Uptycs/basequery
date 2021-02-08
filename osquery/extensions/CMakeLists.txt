@@ -70,6 +70,7 @@ function(generateOsqueryExtensionsExtensionsinterface)
   target_link_libraries(osquery_extensions_extensionsinterface PUBLIC
     osquery_cxx_settings
     osquery_dispatcher
+    osquery_events_eventsregistry
     osquery_filesystem
     osquery_registry
   )

@@ -28,6 +28,9 @@ class ExtensionManagerIf : virtual public ExtensionIf {
   virtual void deregisterExtension(ExtensionStatus& _return, const ExtensionRouteUUID uuid) = 0;
   virtual void query(ExtensionResponse& _return, const std::string& sql) = 0;
   virtual void getQueryColumns(ExtensionResponse& _return, const std::string& sql) = 0;
+  virtual void streamEvents(ExtensionStatus& _return,
+                            const std::string& name,
+                            const ExtensionPluginResponse& batch) = 0;
 };
 
 class ExtensionManagerIfFactory : virtual public ExtensionIfFactory {
@@ -73,6 +76,11 @@ class ExtensionManagerNull : virtual public ExtensionManagerIf , virtual public 
     return;
   }
   void getQueryColumns(ExtensionResponse& /* _return */, const std::string& /* sql */) {
+    return;
+  }
+  void streamEvents(ExtensionStatus& /* _return */,
+                    const std::string& /* name */,
+                    const ExtensionPluginResponse& /* batch */) {
     return;
   }
 };
@@ -684,6 +692,105 @@ class ExtensionManager_getQueryColumns_presult {
 
 };
 
+typedef struct _ExtensionManager_streamEvents_args__isset {
+  _ExtensionManager_streamEvents_args__isset() : name(false), batch(false) {}
+  bool name : 1;
+  bool batch : 1;
+} _ExtensionManager_streamEvents_args__isset;
+
+class ExtensionManager_streamEvents_args {
+ public:
+  ExtensionManager_streamEvents_args(const ExtensionManager_streamEvents_args&);
+  ExtensionManager_streamEvents_args& operator=(
+      const ExtensionManager_streamEvents_args&);
+  ExtensionManager_streamEvents_args() : name() {}
+
+  virtual ~ExtensionManager_streamEvents_args() throw();
+  std::string name;
+  ExtensionPluginResponse batch;
+
+  _ExtensionManager_streamEvents_args__isset __isset;
+
+  void __set_name(const std::string& val);
+
+  void __set_batch(const ExtensionPluginResponse& val);
+
+  bool operator==(const ExtensionManager_streamEvents_args& rhs) const {
+    if (!(name == rhs.name))
+      return false;
+    if (!(batch == rhs.batch))
+      return false;
+    return true;
+  }
+  bool operator!=(const ExtensionManager_streamEvents_args& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_streamEvents_args&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+class ExtensionManager_streamEvents_pargs {
+ public:
+  virtual ~ExtensionManager_streamEvents_pargs() throw();
+  const std::string* name;
+  const ExtensionPluginResponse* batch;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_streamEvents_result__isset {
+  _ExtensionManager_streamEvents_result__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_streamEvents_result__isset;
+
+class ExtensionManager_streamEvents_result {
+ public:
+  ExtensionManager_streamEvents_result(
+      const ExtensionManager_streamEvents_result&);
+  ExtensionManager_streamEvents_result& operator=(
+      const ExtensionManager_streamEvents_result&);
+  ExtensionManager_streamEvents_result() {}
+
+  virtual ~ExtensionManager_streamEvents_result() throw();
+  ExtensionStatus success;
+
+  _ExtensionManager_streamEvents_result__isset __isset;
+
+  void __set_success(const ExtensionStatus& val);
+
+  bool operator==(const ExtensionManager_streamEvents_result& rhs) const {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator!=(const ExtensionManager_streamEvents_result& rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator<(const ExtensionManager_streamEvents_result&) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+};
+
+typedef struct _ExtensionManager_streamEvents_presult__isset {
+  _ExtensionManager_streamEvents_presult__isset() : success(false) {}
+  bool success : 1;
+} _ExtensionManager_streamEvents_presult__isset;
+
+class ExtensionManager_streamEvents_presult {
+ public:
+  virtual ~ExtensionManager_streamEvents_presult() throw();
+  ExtensionStatus* success;
+
+  _ExtensionManager_streamEvents_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+};
+
 class ExtensionManagerClient : virtual public ExtensionManagerIf, public ExtensionClient {
  public:
   ExtensionManagerClient(apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) :
@@ -713,6 +820,12 @@ class ExtensionManagerClient : virtual public ExtensionManagerIf, public Extensi
   void getQueryColumns(ExtensionResponse& _return, const std::string& sql);
   void send_getQueryColumns(const std::string& sql);
   void recv_getQueryColumns(ExtensionResponse& _return);
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& batch);
+  void send_streamEvents(const std::string& name,
+                         const ExtensionPluginResponse& batch);
+  void recv_streamEvents(ExtensionStatus& _return);
 };
 
 class ExtensionManagerProcessor : public ExtensionProcessor {
@@ -729,6 +842,11 @@ class ExtensionManagerProcessor : public ExtensionProcessor {
   void process_deregisterExtension(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_query(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getQueryColumns(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_streamEvents(int32_t seqid,
+                            ::apache::thrift::protocol::TProtocol* iprot,
+                            ::apache::thrift::protocol::TProtocol* oprot,
+                            void* callContext);
+
  public:
   ExtensionManagerProcessor(::apache::thrift::stdcxx::shared_ptr<ExtensionManagerIf> iface) :
     ExtensionProcessor(iface),
@@ -739,6 +857,8 @@ class ExtensionManagerProcessor : public ExtensionProcessor {
     processMap_["deregisterExtension"] = &ExtensionManagerProcessor::process_deregisterExtension;
     processMap_["query"] = &ExtensionManagerProcessor::process_query;
     processMap_["getQueryColumns"] = &ExtensionManagerProcessor::process_getQueryColumns;
+    processMap_["streamEvents"] =
+        &ExtensionManagerProcessor::process_streamEvents;
   }
 
   virtual ~ExtensionManagerProcessor() {}
@@ -832,6 +952,17 @@ class ExtensionManagerMultiface : virtual public ExtensionManagerIf, public Exte
     return;
   }
 
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& batch) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->streamEvents(_return, name, batch);
+    }
+    ifaces_[i]->streamEvents(_return, name, batch);
+    return;
+  }
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -866,6 +997,12 @@ class ExtensionManagerConcurrentClient : virtual public ExtensionManagerIf, publ
   void getQueryColumns(ExtensionResponse& _return, const std::string& sql);
   int32_t send_getQueryColumns(const std::string& sql);
   void recv_getQueryColumns(ExtensionResponse& _return, const int32_t seqid);
+  void streamEvents(ExtensionStatus& _return,
+                    const std::string& name,
+                    const ExtensionPluginResponse& batch);
+  int32_t send_streamEvents(const std::string& name,
+                            const ExtensionPluginResponse& batch);
+  void recv_streamEvents(ExtensionStatus& _return, const int32_t seqid);
 };
 
 #ifdef _MSC_VER

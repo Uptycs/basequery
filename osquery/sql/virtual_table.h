@@ -95,15 +95,13 @@ Status attachFunctionInternal(
 /// Attach all table plugins to an in-memory SQLite database.
 void attachVirtualTables(const SQLiteDBInstanceRef& instance);
 
-#if !defined(OSQUERY_EXTERNAL)
-/**
- * A generated foreign amalgamation file includes schema for all tables.
- *
- * When the build system generates TablePlugin%s from the .table spec files, it
- * reads the foreign-platform tables and generates an associated schema plugin.
- * These plugins are amalgamated into 'foreign_amalgamation' and do not call
- * their filter generation functions.
- */
-void registerForeignTables();
-#endif
+class ExtensionEventTable {
+ public:
+  ExtensionEventTable(const std::string& name) : name_(name) {}
+
+  void generator(RowYield& yield, QueryContext& context);
+
+ private:
+  std::string name_;
+};
 } // namespace osquery

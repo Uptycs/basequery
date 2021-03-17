@@ -19,7 +19,7 @@ on:
       - 'master'
 
     tags:
-      - '**'
+      - '*'
 
   pull_request:
     branches:

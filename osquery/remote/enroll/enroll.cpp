@@ -72,6 +72,10 @@ CREATE_LAZY_REGISTRY(EnrollPlugin, "enroll");
 // re-enrollment at the same time.
 Mutex node_key_mutex;
 
+// This mutex guards the node key so that multiple threads cannot initiate
+// re-enrollment at the same time.
+Mutex node_key_mutex;
+
 Status clearNodeKey() {
   WriteLock lock(node_key_mutex);
   return deleteDatabaseValue(kPersistentSettings, "nodeKey");

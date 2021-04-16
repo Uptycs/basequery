@@ -440,7 +440,7 @@ void Initializer::initShell() const {
 }
 
 void Initializer::initWatcher() const {
-  auto& watcher = Watcher::get();
+  auto watcher = std::make_shared<Watcher>();
 
   // The watcher should not log into or use a persistent database.
   // The watcher already disabled database usage.
@@ -451,13 +451,13 @@ void Initializer::initWatcher() const {
 
   // The watcher takes a list of paths to autoload extensions from.
   // The loadExtensions call will populate the watcher's list of extensions.
-  watcher.loadExtensions();
+  watcher->loadExtensions();
 
   // Add a watcher service thread to start/watch an optional worker and list
   // of optional extensions from the autoload paths.
-  if (watcher.hasManagedExtensions() || !FLAGS_disable_watchdog) {
+  if (Watcher::hasManagedExtensions() || !FLAGS_disable_watchdog) {
     Dispatcher::addService(
-        std::make_shared<WatcherRunner>(*argc_, *argv_, isWatcher()));
+        std::make_shared<WatcherRunner>(*argc_, *argv_, isWatcher(), watcher));
   }
 
   if (isWatcher()) {
@@ -467,9 +467,9 @@ void Initializer::initWatcher() const {
     waitForShutdown();
 
     // Do not start new workers.
-    watcher.bindFates();
-    if (watcher.getWorkerStatus() >= 0) {
-      setShutdownExitCode(watcher.getWorkerStatus());
+    watcher->bindFates();
+    if (watcher->getWorkerStatus() >= 0) {
+      setShutdownExitCode(watcher->getWorkerStatus());
     }
   }
 }
@@ -516,7 +516,7 @@ void Initializer::initActivePlugin(const std::string& type,
       return rs;
     }
 
-    if (!Watcher::get().hasManagedExtensions()) {
+    if (!Watcher::hasManagedExtensions()) {
       // The plugin must be local, and is not active, problem.
       stop = true;
     }
@@ -535,7 +535,7 @@ void Initializer::start() const {
   // If the shell or daemon does not need extensions and it will exit quickly,
   // prefer to disable the extension manager.
   if ((FLAGS_config_check || FLAGS_config_dump || FLAGS_database_dump) &&
-      !Watcher::get().hasManagedExtensions()) {
+      !Watcher::hasManagedExtensions()) {
     FLAGS_disable_extensions = true;
   }
 

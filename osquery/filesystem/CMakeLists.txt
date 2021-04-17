@@ -123,7 +123,6 @@ function(generateOsqueryFilesystemTest)
 
   if(DEFINED PLATFORM_MACOS)
     list(APPEND source_files
-      tests/darwin/plist_tests.cpp
       tests/darwin/bsd_file_flags_tests.cpp
     )
   endif()

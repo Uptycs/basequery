@@ -89,8 +89,7 @@ endif()
 option(OSQUERY_ENABLE_CLANG_TIDY "Enables clang-tidy support")
 set(OSQUERY_CLANG_TIDY_CHECKS "-checks=cert-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,modernize-*,bugprone-*" CACHE STRING "List of checks performed by clang-tidy")
 
-# This is a temporary option to ignore the version check if there's no intention to generate RPM packages
-option(OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK "Ignore the maximum cmake version check introduced due to CPack generating incorrect RPM packages")
+option(OSQUERY_BUILD_BPF "Whether to enable and build BPF support" OFF)
 
 option(OSQUERY_ENABLE_FORMAT_ONLY "Configure CMake to format only, not build")
 

@@ -15,12 +15,6 @@ function(generateOsqueryTablesSystemSystemtable)
       linux/processes.cpp
     )
 
-    if(OSQUERY_BUILD_DPKG)
-      list(APPEND source_files
-        linux/deb_packages.cpp
-      )
-    endif()
-
   elseif(DEFINED PLATFORM_MACOS)
     set(source_files
       darwin/processes.cpp
